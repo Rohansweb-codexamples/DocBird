@@ -3,43 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>DocBird Editor</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200" rel="stylesheet">
-
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Roboto+Slab:wght@400;500;600;700&family=Comic+Neue:wght@400;700&family=Pacifico&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200"
+rel="stylesheet">
 
 <style>
-/* =========================================================
-   DOCBIRD EDITOR
-   ========================================================= */
-
-:root{
-    --db-orange:#ff8a00;
-    --db-yellow:#ffd43b;
-    --db-red:#ff4b3e;
-    --db-pink:#ff5fa2;
-    --db-purple:#8d5cff;
-
-    --editor-bg:#f2f4f8;
-    --toolbar:#ffffff;
-    --paper:#ffffff;
-    --text:#202124;
-    --muted:#6b7280;
-    --border:#dfe3e8;
-
-    --page-width:794px;
-    --page-min-height:1123px;
-
-    --zoom:1;
-}
-
 *{
     box-sizing:border-box;
+}
+
+:root{
+    --orange:#ff8a00;
+    --yellow:#ffd84d;
+    --pink:#ff4f9a;
+    --red:#ff4b3e;
+    --purple:#805cff;
+    --blue:#4285f4;
+    --green:#34a853;
+    --text:#202124;
+    --muted:#6b7280;
+    --line:#dadce0;
+    --panel:#ffffff;
+    --toolbar:#ffffff;
+    --workspace:#eef1f5;
+    --paper:#ffffff;
+    --zoom:1;
 }
 
 html,
@@ -50,213 +41,192 @@ body{
     overflow:hidden;
     font-family:Inter,Arial,sans-serif;
     color:var(--text);
-    background:var(--editor-bg);
+    background:
+        radial-gradient(circle at 10% 10%,rgba(255,216,77,.28),transparent 25%),
+        radial-gradient(circle at 90% 15%,rgba(255,79,154,.22),transparent 27%),
+        linear-gradient(135deg,#fff7df,#fff,#fff2f8);
 }
 
 button,
 input,
-select{
+select,
+textarea{
     font:inherit;
 }
 
 button{
-    cursor:pointer;
+    border:0;
 }
 
-/* =========================================================
-   APP
-   ========================================================= */
+.material-symbols-outlined{
+    font-size:20px;
+    line-height:1;
+    vertical-align:middle;
+}
 
-.docbird-app{
-    height:100vh;
+/* APP */
+
+.app{
+    width:100%;
+    height:100%;
     display:flex;
     flex-direction:column;
 }
 
-/* =========================================================
-   TOP BAR
-   ========================================================= */
+/* TOP BAR */
 
 .topbar{
-    height:66px;
-    flex-shrink:0;
+    height:68px;
+    flex:none;
     display:flex;
     align-items:center;
-    gap:14px;
-    padding:0 18px;
-    background:rgba(255,255,255,.96);
-    border-bottom:1px solid var(--border);
-    z-index:50;
+    gap:12px;
+    padding:9px 14px;
+    background:rgba(255,255,255,.9);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(0,0,0,.08);
+    box-shadow:0 2px 15px rgba(0,0,0,.05);
+    z-index:20;
 }
 
-.brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    min-width:150px;
-}
-
-.brand-logo{
-    width:40px;
-    height:40px;
-    border-radius:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+.logo{
+    width:43px;
+    height:43px;
+    border-radius:14px;
+    display:grid;
+    place-items:center;
     color:white;
+    font-size:22px;
     font-weight:800;
-    font-size:18px;
-    background:linear-gradient(
-        135deg,
-        var(--db-yellow),
-        var(--db-orange),
-        var(--db-red),
-        var(--db-pink)
-    );
-    box-shadow:0 7px 18px rgba(255,120,0,.25);
+    background:
+        linear-gradient(135deg,var(--orange),var(--red),var(--pink));
+    box-shadow:0 7px 20px rgba(255,100,40,.3);
 }
 
-.brand-name{
-    font-size:18px;
-    font-weight:800;
-    letter-spacing:-.4px;
+.title-wrap{
+    min-width:170px;
+    max-width:330px;
 }
 
-.document-name{
-    flex:1;
-    min-width:100px;
-    max-width:500px;
-}
-
-.document-name input{
+.title{
     width:100%;
     border:1px solid transparent;
     background:transparent;
-    padding:9px 12px;
-    border-radius:10px;
-    font-size:17px;
+    font-size:18px;
     font-weight:600;
     outline:none;
+    padding:7px 9px;
+    border-radius:9px;
 }
 
-.document-name input:hover{
-    background:#f5f6f8;
-}
-
-.document-name input:focus{
+.title:hover,
+.title:focus{
+    border-color:#dadce0;
     background:#fff;
-    border-color:#ffae39;
-    box-shadow:0 0 0 3px rgba(255,138,0,.12);
+}
+
+.saved{
+    font-size:11px;
+    color:#6b7280;
+    padding-left:10px;
 }
 
 .top-actions{
+    margin-left:auto;
     display:flex;
     align-items:center;
     gap:6px;
 }
 
-.icon-btn{
-    width:42px;
-    height:42px;
-    border:0;
-    border-radius:11px;
-    background:transparent;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#4b5563;
-    transition:.18s ease;
-}
+/* BUTTONS */
 
-.icon-btn:hover{
-    background:#f0f2f5;
-    color:#111827;
-}
-
-.icon-btn.active{
-    background:#fff0d8;
-    color:#ef7d00;
-}
-
-.material-symbols-outlined{
-    font-size:21px;
-}
-
-/* =========================================================
-   TOOLBAR
-   ========================================================= */
-
-.toolbar-wrap{
-    flex-shrink:0;
-    background:white;
-    border-bottom:1px solid var(--border);
-    z-index:45;
-}
-
-.toolbar{
-    min-height:54px;
-    display:flex;
-    align-items:center;
-    gap:5px;
-    padding:6px 12px;
-    overflow-x:auto;
-    scrollbar-width:thin;
-}
-
-.tool-group{
-    display:flex;
-    align-items:center;
-    gap:3px;
-    padding-right:7px;
-    margin-right:3px;
-    border-right:1px solid #e7e9ed;
-}
-
-.tool-group:last-child{
-    border-right:0;
-}
-
+.icon-btn,
 .tool-btn{
-    height:36px;
-    min-width:36px;
-    padding:0 8px;
-    border:0;
-    border-radius:8px;
-    background:transparent;
-    color:#374151;
-    display:flex;
+    position:relative;
+    display:inline-flex;
     align-items:center;
     justify-content:center;
     gap:5px;
-    transition:.15s;
+    min-width:38px;
+    height:38px;
+    padding:0 9px;
+    border-radius:10px;
+    background:transparent;
+    color:#3c4043;
+    cursor:pointer;
+    transition:.16s ease;
 }
 
+.icon-btn:hover,
 .tool-btn:hover{
-    background:#f1f3f5;
+    background:#f1f3f4;
+    transform:translateY(-1px);
 }
 
 .tool-btn.active{
-    background:#ffe7c2;
-    color:#e56f00;
+    background:#ffe4a8;
+    color:#8b4a00;
 }
 
-.tool-btn .material-symbols-outlined{
-    font-size:20px;
+.primary{
+    color:white;
+    font-weight:700;
+    background:
+        linear-gradient(135deg,var(--orange),var(--pink));
+    box-shadow:0 5px 15px rgba(255,115,40,.24);
 }
 
-select.tool-select{
-    height:36px;
-    border:1px solid transparent;
-    border-radius:8px;
+.primary:hover{
+    color:white;
+    background:
+        linear-gradient(135deg,#ff7900,#ff3f92);
+}
+
+/* TOOLBAR */
+
+.toolbar{
+    min-height:57px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    padding:7px 12px;
+    background:rgba(255,255,255,.96);
+    border-bottom:1px solid #ddd;
+    overflow-x:auto;
+    z-index:19;
+}
+
+.toolbar::-webkit-scrollbar{
+    height:4px;
+}
+
+.toolbar::-webkit-scrollbar-thumb{
+    background:#c9c9c9;
+    border-radius:20px;
+}
+
+.separator{
+    width:1px;
+    height:29px;
+    background:#dadce0;
+    margin:0 4px;
+    flex:none;
+}
+
+.select{
+    height:38px;
+    border:1px solid #dadce0;
+    background:white;
+    border-radius:9px;
     padding:0 8px;
-    background:transparent;
-    color:#374151;
+    color:#333;
     outline:none;
+    cursor:pointer;
 }
 
-select.tool-select:hover,
-select.tool-select:focus{
-    background:#f3f4f6;
+.select:focus{
+    border-color:#4285f4;
 }
 
 .font-select{
@@ -264,777 +234,803 @@ select.tool-select:focus{
 }
 
 .size-select{
-    width:80px;
+    width:78px;
 }
 
-.color-control{
-    position:relative;
-}
-
-.color-control input{
-    position:absolute;
-    opacity:0;
-    width:0;
-    height:0;
-}
-
-.color-button{
-    width:38px;
-    height:36px;
-    border:0;
-    border-radius:8px;
-    background:transparent;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.color-preview{
-    width:20px;
-    height:20px;
-    border-radius:5px;
-    border:2px solid #fff;
-    box-shadow:0 0 0 1px #aaa;
-}
-
-/* =========================================================
-   WORKSPACE
-   ========================================================= */
+/* WORKSPACE */
 
 .workspace{
     flex:1;
     min-height:0;
     display:flex;
-    overflow:hidden;
-}
-
-.side-panel{
-    width:270px;
-    flex-shrink:0;
-    background:#fff;
-    border-right:1px solid var(--border);
-    overflow-y:auto;
-    display:none;
-}
-
-.side-panel.open{
-    display:block;
-}
-
-.panel-header{
-    height:58px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 17px;
-    border-bottom:1px solid #eceef1;
-}
-
-.panel-header strong{
-    font-size:15px;
-}
-
-.panel-content{
-    padding:15px;
-}
-
-.setting{
-    padding:11px 0;
-    border-bottom:1px solid #f0f1f3;
-}
-
-.setting label{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    font-size:13px;
-    color:#374151;
-}
-
-.setting small{
-    display:block;
-    margin-top:5px;
-    color:#8a9099;
-    line-height:1.4;
-}
-
-.switch{
     position:relative;
-    width:42px;
-    height:24px;
-    flex-shrink:0;
 }
-
-.switch input{
-    opacity:0;
-    width:0;
-    height:0;
-}
-
-.slider{
-    position:absolute;
-    inset:0;
-    background:#d7dbe0;
-    border-radius:30px;
-    transition:.2s;
-}
-
-.slider:before{
-    content:"";
-    position:absolute;
-    width:18px;
-    height:18px;
-    left:3px;
-    top:3px;
-    background:white;
-    border-radius:50%;
-    box-shadow:0 1px 3px rgba(0,0,0,.2);
-    transition:.2s;
-}
-
-.switch input:checked + .slider{
-    background:linear-gradient(135deg,#ffae19,#ff6f00);
-}
-
-.switch input:checked + .slider:before{
-    transform:translateX(18px);
-}
-
-/* =========================================================
-   CANVAS
-   ========================================================= */
 
 .editor-area{
     flex:1;
     min-width:0;
+    min-height:0;
     overflow:auto;
-    position:relative;
-    padding:45px 35px 100px;
+    padding:34px 30px 100px;
     background:
-        radial-gradient(circle at 10% 10%,rgba(255,196,70,.12),transparent 25%),
-        radial-gradient(circle at 90% 20%,rgba(255,95,162,.08),transparent 25%),
-        #eef1f5;
+        radial-gradient(circle at 20% 20%,rgba(255,255,255,.8),transparent 35%),
+        #e9edf2;
+    scroll-behavior:smooth;
 }
+
+.editor-area::-webkit-scrollbar{
+    width:12px;
+}
+
+.editor-area::-webkit-scrollbar-thumb{
+    background:#c7cbd1;
+    border-radius:20px;
+    border:3px solid #e9edf2;
+}
+
+/* PAGES */
 
 .pages{
     width:max-content;
-    margin:0 auto;
-    transform-origin:top center;
-    transform:scale(var(--zoom));
-    transition:transform .12s ease;
+    min-width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
 }
 
 .page{
     position:relative;
-    width:var(--page-width);
-    min-height:var(--page-min-height);
+    width:794px;
+    min-height:1123px;
+    height:auto;
     background:var(--paper);
-    margin-bottom:35px;
-    padding:80px 75px 85px;
     box-shadow:
-        0 5px 12px rgba(0,0,0,.08),
-        0 20px 55px rgba(0,0,0,.09);
+        0 10px 35px rgba(0,0,0,.13),
+        0 2px 5px rgba(0,0,0,.07);
     border-radius:2px;
-    overflow:hidden;
+    flex:none;
+    overflow:visible;
+    transform-origin:top center;
+}
+
+.page.selected-page{
+    outline:3px solid rgba(255,138,0,.38);
 }
 
 .page-header{
-    position:absolute;
-    left:75px;
-    right:75px;
-    top:30px;
-    min-height:25px;
-    color:#9aa0a6;
+    min-height:45px;
+    padding:14px 62px 8px;
+    color:#777;
     font-size:10px;
+    letter-spacing:1px;
     text-transform:uppercase;
-    letter-spacing:1.5px;
-    border-bottom:1px solid #e9eaed;
-    padding-bottom:7px;
+    border-bottom:1px solid transparent;
 }
 
 .page-footer{
-    position:absolute;
-    left:75px;
-    right:75px;
-    bottom:28px;
-    min-height:25px;
-    color:#9aa0a6;
+    min-height:45px;
+    padding:9px 62px 15px;
+    color:#777;
     font-size:10px;
-    border-top:1px solid #e9eaed;
-    padding-top:7px;
-    display:flex;
-    justify-content:space-between;
+    text-align:center;
+    border-top:1px solid transparent;
 }
 
 .document-content{
     position:relative;
     min-height:950px;
+    padding:28px 62px 55px;
     outline:none;
+    font-family:Inter,Arial,sans-serif;
     font-size:16px;
     line-height:1.65;
-    word-wrap:break-word;
-}
-
-.document-content:focus{
-    outline:none;
-}
-
-.document-content h1{
-    font-size:34px;
-    line-height:1.2;
-    margin:0 0 18px;
-    letter-spacing:-1px;
-}
-
-.document-content h2{
-    font-size:27px;
-    margin:25px 0 12px;
-}
-
-.document-content h3{
-    font-size:22px;
-    margin:22px 0 10px;
+    overflow:visible;
+    overflow-wrap:anywhere;
+    word-break:normal;
 }
 
 .document-content p{
     margin:0 0 12px;
 }
 
-.document-content blockquote{
-    margin:20px 0;
-    padding:15px 20px;
-    border-left:5px solid #ff9d1a;
-    background:#fff7e9;
-    border-radius:0 10px 10px 0;
+.document-content h1{
+    font-size:34px;
+    line-height:1.2;
+    margin:12px 0 20px;
+}
+
+.document-content h2{
+    font-size:28px;
+    line-height:1.25;
+    margin:12px 0 17px;
+}
+
+.document-content h3{
+    font-size:23px;
+    margin:12px 0 14px;
+}
+
+.document-content h4{
+    font-size:20px;
+}
+
+.document-content h5{
+    font-size:17px;
+}
+
+.document-content h6{
+    font-size:14px;
 }
 
 .document-content img{
     max-width:100%;
     height:auto;
     display:block;
-    margin:16px auto;
-    border-radius:8px;
+    margin:12px 0;
 }
 
 .document-content table{
-    width:100%;
     border-collapse:collapse;
-    margin:18px 0;
+    width:100%;
+    margin:16px 0;
 }
 
 .document-content td,
 .document-content th{
-    border:1px solid #bfc4ca;
-    padding:9px;
-    min-width:55px;
+    border:1px solid #999;
+    padding:8px;
+    min-width:70px;
 }
 
-.document-content th{
-    background:#f4f5f6;
-    font-weight:700;
+.document-content blockquote{
+    margin:15px 0;
+    padding:12px 18px;
+    border-left:5px solid var(--orange);
+    background:#fff5e7;
+    border-radius:8px;
 }
 
-/* =========================================================
-   DOCUMENT MODES
-   ========================================================= */
+.document-content a{
+    color:#1967d2;
+}
 
-.page.ruled{
-    background-color:#fff;
+.document-content hr.document-rule{
+    border:0;
+    border-top:3px solid #333;
+    margin:22px 0;
+    width:100%;
+    height:3px;
+    display:block;
+}
+
+/* PAGE BACKGROUNDS */
+
+.page.ruled .document-content{
     background-image:
         repeating-linear-gradient(
             to bottom,
             transparent 0,
-            transparent 31px,
-            rgba(90,140,220,.24) 32px,
-            transparent 33px
+            transparent 30px,
+            rgba(65,105,180,.20) 31px,
+            transparent 32px
+        );
+    background-position:0 20px;
+}
+
+.page.margin-line .document-content{
+    background-image:
+        linear-gradient(
+            to right,
+            transparent 0,
+            transparent 48px,
+            rgba(240,70,70,.65) 49px,
+            rgba(240,70,70,.65) 50px,
+            transparent 51px
+        ),
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 30px,
+            rgba(65,105,180,.20) 31px,
+            transparent 32px
         );
 }
 
-.page.ruled .document-content{
-    background:transparent;
-}
-
-.page.ruled.margin-line:after{
-    content:"";
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:125px;
-    width:1px;
-    background:rgba(230,80,80,.45);
-    pointer-events:none;
-}
-
-.page.math-grid{
-    background-color:#fff;
+.page.math-grid .document-content{
     background-image:
-        linear-gradient(rgba(70,120,200,.19) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(70,120,200,.19) 1px,transparent 1px);
+        linear-gradient(rgba(66,133,244,.15) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(66,133,244,.15) 1px,transparent 1px);
     background-size:25px 25px;
 }
 
-.page.math-grid-large{
-    background-size:50px 50px;
+.page.math-grid.ruled .document-content{
+    background-image:
+        linear-gradient(rgba(66,133,244,.13) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(66,133,244,.13) 1px,transparent 1px),
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 30px,
+            rgba(65,105,180,.12) 31px,
+            transparent 32px
+        );
+    background-size:25px 25px,25px 25px,auto;
 }
+
+.page.no-lines .document-content{
+    background-image:none;
+}
+
+/* NEWSPAPER */
 
 .page.newspaper .document-content{
     column-count:2;
-    column-gap:42px;
-    column-rule:1px solid #d5d8dc;
+    column-gap:34px;
+    column-rule:1px solid #bbb;
 }
 
-.page.newspaper .document-content h1,
-.page.newspaper .document-content h2,
-.page.newspaper .document-content h3{
-    column-span:all;
-}
-
-.page.newspaper .document-content img,
-.page.newspaper .document-content table,
-.page.newspaper .document-content blockquote{
+.page.newspaper .document-content > *{
     break-inside:avoid;
 }
 
-.page.focus .page-header,
-.page.focus .page-footer{
-    display:none;
-}
-
-.page.focus{
-    padding-top:55px;
-}
-
-.page.dark{
-    background:#202124;
-    color:#f5f5f5;
-}
-
-.page.dark .page-header,
-.page.dark .page-footer{
-    color:#aaa;
-    border-color:#444;
-}
-
-.page.dark .document-content blockquote{
-    background:#303134;
-}
-
-.page.dark .document-content th{
-    background:#303134;
-}
-
-/* =========================================================
-   SPECIAL INSERTS
-   ========================================================= */
+/* MATHS */
 
 .math-square{
     display:inline-flex;
-    width:55px;
-    height:55px;
-    margin:4px;
-    border:2px solid #222;
-    background:#fff;
     align-items:center;
     justify-content:center;
     vertical-align:middle;
-    font-size:18px;
+    width:58px;
+    height:58px;
+    margin:4px;
+    border:2px solid #202124;
+    background:white;
+    font-size:24px;
     font-weight:600;
-    min-width:55px;
-    min-height:55px;
-}
-
-.math-square:focus{
-    outline:2px solid #ff9800;
+    line-height:1;
+    overflow:visible;
+    cursor:text;
 }
 
 .math-equation{
     display:block;
-    margin:18px auto;
-    padding:15px 20px;
-    border:1px solid #cfd4da;
+    margin:18px 0;
+    padding:14px 18px;
+    background:#f8f9fa;
+    border:1px solid #dadce0;
     border-radius:10px;
-    background:#fafafa;
-    font-family:"Roboto Mono",monospace;
-    text-align:center;
-    max-width:90%;
+    font-family:"Roboto Slab",serif;
+    font-size:22px;
 }
+
+/* CALLOUT */
 
 .callout{
     padding:18px;
-    margin:18px 0;
+    margin:16px 0;
     border-radius:14px;
-    background:linear-gradient(
-        135deg,
-        rgba(255,190,60,.18),
-        rgba(255,95,162,.12)
-    );
-    border:1px solid rgba(255,155,35,.35);
+    background:
+        linear-gradient(135deg,#fff4cf,#ffe5ed);
+    border-left:6px solid var(--orange);
 }
 
-.checklist-item{
+/* PAGE CONTROL */
+
+.page-controls{
+    position:absolute;
+    right:-48px;
+    top:12px;
     display:flex;
-    align-items:flex-start;
-    gap:9px;
-    margin:7px 0;
+    flex-direction:column;
+    gap:4px;
+    opacity:0;
+    transition:.15s;
+    z-index:10;
 }
 
-.checklist-item input{
-    margin-top:6px;
+.page:hover .page-controls,
+.page.selected-page .page-controls{
+    opacity:1;
 }
 
-/* =========================================================
-   STATUS BAR
-   ========================================================= */
+.page-control{
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    border-radius:9px;
+    background:white;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+    cursor:pointer;
+}
+
+.page-control:hover{
+    background:#fff0d5;
+}
+
+/* STATUS */
 
 .statusbar{
     height:34px;
-    flex-shrink:0;
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:0 15px;
     background:white;
-    border-top:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 13px;
-    color:#737982;
+    border-top:1px solid #ddd;
+    color:#5f6368;
     font-size:11px;
-    z-index:40;
+    z-index:20;
 }
 
-.status-left,
 .status-right{
+    margin-left:auto;
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.zoom{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:5px;
 }
 
-/* =========================================================
-   PANELS / MODALS
-   ========================================================= */
-
-.modal-backdrop{
-    position:fixed;
-    inset:0;
-    z-index:200;
-    background:rgba(15,18,24,.48);
-    backdrop-filter:blur(6px);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
+.zoom button{
+    width:26px;
+    height:26px;
+    border-radius:7px;
+    cursor:pointer;
+    background:#f1f3f4;
 }
 
-.modal-backdrop.show{
-    display:flex;
-}
+/* SETTINGS PANEL */
 
-.modal{
-    width:min(650px,100%);
-    max-height:90vh;
+.side-panel{
+    width:310px;
+    flex:none;
+    background:rgba(255,255,255,.96);
+    border-left:1px solid #ddd;
+    box-shadow:-5px 0 20px rgba(0,0,0,.05);
     overflow:auto;
-    background:#fff;
-    border-radius:20px;
-    box-shadow:0 30px 90px rgba(0,0,0,.28);
+    display:none;
+    z-index:15;
 }
 
-.modal-header{
+.side-panel.open{
+    display:block;
+}
+
+.panel-head{
+    height:58px;
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    padding:20px 22px;
-    border-bottom:1px solid #eceef1;
-}
-
-.modal-header h2{
-    margin:0;
-    font-size:19px;
-}
-
-.modal-body{
-    padding:22px;
-}
-
-.modal-actions{
-    padding:15px 22px;
-    border-top:1px solid #eceef1;
-    display:flex;
-    justify-content:flex-end;
-    gap:8px;
-}
-
-.primary-btn{
-    border:0;
-    border-radius:10px;
-    padding:10px 16px;
-    color:#fff;
+    justify-content:space-between;
+    padding:0 16px;
+    border-bottom:1px solid #ddd;
     font-weight:700;
-    background:linear-gradient(135deg,#ffb11b,#ff6d00);
-    box-shadow:0 6px 15px rgba(255,130,0,.2);
 }
 
-.secondary-btn{
-    border:1px solid #dfe3e8;
-    background:#fff;
-    border-radius:10px;
-    padding:10px 16px;
-    font-weight:600;
+.panel-section{
+    padding:16px;
+    border-bottom:1px solid #eee;
 }
 
-/* =========================================================
-   PRESENTATION
-   ========================================================= */
+.panel-title{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.7px;
+    color:#777;
+    margin-bottom:10px;
+}
+
+.option{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:9px 0;
+    font-size:14px;
+}
+
+.option input[type="checkbox"]{
+    width:18px;
+    height:18px;
+}
+
+.panel-select{
+    width:100%;
+    height:38px;
+    border:1px solid #dadce0;
+    border-radius:8px;
+    padding:0 8px;
+}
+
+/* PRESENTATION */
 
 .presentation{
     position:fixed;
     inset:0;
-    z-index:500;
+    background:#101114;
+    z-index:1000;
     display:none;
-    background:#08090c;
+    flex-direction:column;
+}
+
+.presentation.open{
+    display:flex;
+}
+
+.presentation-top{
+    height:58px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 12px;
+    background:rgba(20,20,23,.96);
     color:white;
 }
 
-.presentation.show{
-    display:block;
+.presentation-title{
+    margin-right:auto;
+    font-weight:700;
 }
 
 .presentation-stage{
-    position:absolute;
-    inset:0;
+    position:relative;
+    flex:1;
+    min-height:0;
+    overflow:auto;
     display:flex;
-    align-items:center;
     justify-content:center;
-    padding:45px;
-    overflow:hidden;
+    align-items:flex-start;
+    padding:35px;
 }
 
 .presentation-page{
     position:relative;
-    width:min(1100px,90vw);
-    height:min(78vh,760px);
+    width:794px;
+    min-height:1123px;
+    height:auto;
     background:white;
     color:#202124;
-    padding:70px;
-    border-radius:5px;
-    overflow:auto;
-    box-shadow:0 30px 100px rgba(0,0,0,.5);
+    box-shadow:0 15px 50px rgba(0,0,0,.5);
+    flex:none;
+    overflow:visible;
 }
 
-.presentation-page .document-content{
-    min-height:auto;
+.presentation-content{
+    padding:65px;
+    min-height:1000px;
+    font-size:20px;
+    line-height:1.65;
+    overflow:visible;
 }
 
-.presentation-page .page-header,
-.presentation-page .page-footer{
-    display:none;
+.presentation-content img{
+    max-width:100%;
+    height:auto;
 }
 
-.presentation-page.ruled{
-    background-color:#fff;
-    background-image:
-        repeating-linear-gradient(
-            to bottom,
-            transparent 0,
-            transparent 35px,
-            rgba(90,140,220,.22) 36px,
-            transparent 37px
-        );
-}
-
-.presentation-page.math-grid{
-    background-image:
-        linear-gradient(rgba(70,120,200,.19) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(70,120,200,.19) 1px,transparent 1px);
-    background-size:30px 30px;
-}
-
-.presentation-page.newspaper .document-content{
-    column-count:2;
-    column-gap:45px;
-}
-
-.presentation-page.dark{
-    background:#202124;
-    color:#fff;
-}
-
-.presentation-toolbar{
-    position:absolute;
-    left:50%;
-    bottom:20px;
-    transform:translateX(-50%);
-    z-index:20;
-    display:flex;
-    align-items:center;
-    gap:5px;
-    padding:8px;
-    border:1px solid rgba(255,255,255,.14);
-    border-radius:16px;
-    background:rgba(25,27,32,.9);
-    backdrop-filter:blur(14px);
-    box-shadow:0 15px 45px rgba(0,0,0,.4);
-}
-
-.present-btn{
-    width:42px;
-    height:42px;
-    border:0;
-    border-radius:10px;
-    color:white;
-    background:transparent;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.present-btn:hover{
-    background:rgba(255,255,255,.1);
-}
-
-.present-btn.active{
-    background:#ff8a00;
-}
-
-.present-color{
-    width:30px;
-    height:30px;
-    border:2px solid white;
-    border-radius:50%;
-    padding:0;
-}
-
-.present-size{
-    width:90px;
-}
-
-.presentation-title{
-    position:absolute;
-    top:17px;
-    left:25px;
-    font-weight:700;
-    font-size:14px;
-    color:rgba(255,255,255,.8);
-}
-
-.presentation-help{
-    position:absolute;
-    top:17px;
-    right:25px;
-    font-size:11px;
-    color:rgba(255,255,255,.5);
-}
-
-/* annotation canvas */
-
-#annotationCanvas{
+.annotation-canvas{
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
-    z-index:10;
+    z-index:20;
     pointer-events:none;
+    touch-action:none;
 }
 
-.presentation.annotating #annotationCanvas{
+.presentation.annotating .annotation-canvas{
     pointer-events:auto;
     cursor:crosshair;
 }
 
-/* =========================================================
-   TOAST
-   ========================================================= */
+.presentation-tools{
+    display:none;
+    align-items:center;
+    gap:5px;
+}
 
-.toast{
+.presentation.annotating .presentation-tools{
+    display:flex;
+}
+
+.annotation-color{
+    width:34px;
+    height:34px;
+    padding:3px;
+    border-radius:8px;
+    background:#333;
+    border:1px solid #666;
+}
+
+.annotation-size{
+    width:65px;
+    height:34px;
+    border-radius:8px;
+    border:1px solid #555;
+    background:#222;
+    color:white;
+}
+
+/* MODALS */
+
+.modal-backdrop{
     position:fixed;
-    right:22px;
-    bottom:55px;
-    z-index:700;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.4);
+    backdrop-filter:blur(5px);
+    z-index:2000;
+}
+
+.modal-backdrop.open{
+    display:flex;
+}
+
+.modal{
+    width:min(520px,calc(100% - 30px));
+    max-height:85vh;
+    overflow:auto;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 25px 70px rgba(0,0,0,.25);
+    padding:22px;
+}
+
+.modal h2{
+    margin:0 0 16px;
+}
+
+.modal input,
+.modal textarea{
+    width:100%;
+    border:1px solid #dadce0;
+    border-radius:9px;
+    padding:11px;
+    outline:none;
+}
+
+.modal textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:16px;
+}
+
+.modal-btn{
+    height:38px;
+    padding:0 15px;
+    border-radius:9px;
+    background:#f1f3f4;
+    cursor:pointer;
+}
+
+.modal-btn.primary-modal{
+    background:#ff8a00;
+    color:white;
+}
+
+/* DARK MODE */
+
+body.dark{
+    --text:#f1f3f4;
+    --muted:#aeb4bd;
+    --panel:#202124;
+    --toolbar:#202124;
+    --workspace:#17181b;
+    background:#17181b;
+    color:#f1f3f4;
+}
+
+body.dark .topbar,
+body.dark .toolbar,
+body.dark .statusbar,
+body.dark .side-panel{
     background:#202124;
-    color:#fff;
-    border-radius:10px;
-    padding:11px 15px;
-    font-size:12px;
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
-    opacity:0;
-    transform:translateY(10px);
-    pointer-events:none;
-    transition:.2s;
+    color:#f1f3f4;
+    border-color:#3c4043;
 }
 
-.toast.show{
-    opacity:1;
-    transform:translateY(0);
+body.dark .editor-area{
+    background:#17181b;
 }
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
+body.dark .select,
+body.dark .title{
+    background:#292a2d;
+    color:white;
+    border-color:#45474b;
+}
 
-@media(max-width:800px){
+body.dark .tool-btn,
+body.dark .icon-btn{
+    color:#eee;
+}
 
+body.dark .tool-btn:hover,
+body.dark .icon-btn:hover{
+    background:#303134;
+}
+
+body.dark .page{
+    background:#fff;
+    color:#202124;
+}
+
+/* FOCUS */
+
+body.focus .toolbar{
+    display:none;
+}
+
+body.focus .statusbar{
+    display:none;
+}
+
+body.focus .topbar{
+    background:transparent;
+    border:0;
+    box-shadow:none;
+}
+
+body.focus .editor-area{
+    padding-top:20px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
     .topbar{
-        height:58px;
-        padding:0 9px;
-        gap:6px;
+        height:60px;
     }
 
-    .brand{
-        min-width:auto;
+    .title-wrap{
+        min-width:120px;
+        max-width:190px;
     }
 
-    .brand-name{
+    .top-actions .label{
         display:none;
     }
 
-    .document-name{
-        max-width:none;
+    .editor-area{
+        padding:20px 12px 80px;
     }
 
-    .top-actions .optional{
+    .page{
+        width:min(794px,calc(100vw - 24px));
+    }
+
+    .document-content{
+        padding-left:35px;
+        padding-right:35px;
+    }
+
+    .page-header{
+        padding-left:35px;
+        padding-right:35px;
+    }
+
+    .page-footer{
+        padding-left:35px;
+        padding-right:35px;
+    }
+
+    .page-controls{
+        right:5px;
+        top:5px;
+    }
+
+    .presentation-stage{
+        padding:10px;
+    }
+
+    .presentation-page{
+        transform-origin:top center;
+    }
+
+    .side-panel{
+        position:absolute;
+        right:0;
+        top:0;
+        bottom:0;
+    }
+}
+
+@media(max-width:600px){
+    .logo{
+        width:38px;
+        height:38px;
+    }
+
+    .title-wrap{
+        max-width:140px;
+    }
+
+    .saved{
         display:none;
     }
 
     .toolbar{
-        padding:5px;
+        min-height:52px;
     }
 
-    .editor-area{
-        padding:20px 10px 70px;
+    .font-select{
+        width:120px;
     }
 
-    .page{
-        width:calc(100vw - 25px);
-        min-height:calc(100vh - 120px);
-        padding:65px 28px 70px;
+    .document-content{
+        padding:24px 25px 45px;
     }
 
     .page-header{
-        left:28px;
-        right:28px;
+        padding:12px 25px 6px;
     }
 
     .page-footer{
-        left:28px;
-        right:28px;
+        padding:7px 25px 12px;
     }
 
-    .page.ruled.margin-line:after{
-        left:70px;
+    .statusbar{
+        gap:7px;
     }
 
-    .presentation-stage{
-        padding:15px;
+    .statusbar .stats{
+        display:none;
+    }
+}
+
+/* PRINT */
+
+@media print{
+    html,
+    body{
+        overflow:visible !important;
+        background:white !important;
     }
 
-    .presentation-page{
-        width:96vw;
-        height:88vh;
-        padding:35px;
+    .topbar,
+    .toolbar,
+    .statusbar,
+    .side-panel,
+    .page-controls{
+        display:none !important;
     }
 
-    .presentation-toolbar{
-        bottom:8px;
-        max-width:96vw;
-        overflow-x:auto;
+    .editor-area{
+        padding:0 !important;
+        overflow:visible !important;
+        background:white !important;
+    }
+
+    .pages{
+        display:block;
+    }
+
+    .page{
+        width:210mm;
+        min-height:297mm;
+        margin:0;
+        box-shadow:none;
+        break-after:page;
+        page-break-after:always;
+    }
+
+    .page:last-child{
+        break-after:auto;
+        page-break-after:auto;
     }
 }
 </style>
@@ -1042,120 +1038,81 @@ select.tool-select:focus{
 
 <body>
 
-<div class="docbird-app">
+<div class="app" id="app">
 
-<!-- ======================================================
-     TOP BAR
-     ====================================================== -->
+    <!-- TOP BAR -->
+    <header class="topbar">
 
-<header class="topbar">
+        <div class="logo">D</div>
 
-    <div class="brand">
-        <div class="brand-logo">D</div>
-        <div class="brand-name">DocBird</div>
-    </div>
+        <div class="title-wrap">
+            <input
+                id="documentTitle"
+                class="title"
+                value="Untitled document"
+                aria-label="Document name"
+            >
+            <div class="saved" id="saveStatus">Saved locally</div>
+        </div>
 
-    <div class="document-name">
-        <input
-            id="documentTitle"
-            type="text"
-            value="Untitled document"
-            aria-label="Document name"
-            autocomplete="off"
-        >
-    </div>
+        <div class="top-actions">
 
-    <div class="top-actions">
+            <button class="icon-btn" id="undoBtn" title="Undo">
+                <span class="material-symbols-outlined">undo</span>
+            </button>
 
-        <button class="icon-btn" id="saveBtn" title="Save">
-            <span class="material-symbols-outlined">cloud_done</span>
+            <button class="icon-btn" id="redoBtn" title="Redo">
+                <span class="material-symbols-outlined">redo</span>
+            </button>
+
+            <button class="icon-btn" id="findBtn" title="Find and replace">
+                <span class="material-symbols-outlined">search</span>
+            </button>
+
+            <button class="icon-btn" id="settingsBtn" title="Settings">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+
+            <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">
+                <span class="material-symbols-outlined">fullscreen</span>
+            </button>
+
+            <button class="tool-btn primary" id="saveBtn">
+                <span class="material-symbols-outlined">save</span>
+                <span class="label">Save</span>
+            </button>
+
+        </div>
+    </header>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar" id="toolbar">
+
+        <button class="tool-btn primary" id="newPageBtn" title="Create a new page">
+            <span class="material-symbols-outlined">note_add</span>
+            <span class="label">New page</span>
         </button>
 
-        <button class="icon-btn" id="undoBtn" title="Undo">
-            <span class="material-symbols-outlined">undo</span>
+        <button class="tool-btn" id="pageBreakBtn" title="Start a new page">
+            <span class="material-symbols-outlined">insert_page_break</span>
+            <span class="label">Page break</span>
         </button>
 
-        <button class="icon-btn" id="redoBtn" title="Redo">
-            <span class="material-symbols-outlined">redo</span>
-        </button>
+        <div class="separator"></div>
 
-        <button class="icon-btn optional" id="findBtn" title="Find and replace">
-            <span class="material-symbols-outlined">find_replace</span>
-        </button>
-
-        <button class="icon-btn optional" id="uploadBtn" title="Upload files">
-            <span class="material-symbols-outlined">upload_file</span>
-        </button>
-
-        <button class="icon-btn" id="presentBtn" title="Present">
-            <span class="material-symbols-outlined">present_to_all</span>
-        </button>
-
-        <button class="icon-btn" id="settingsBtn" title="Settings">
-            <span class="material-symbols-outlined">settings</span>
-        </button>
-
-        <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">
-            <span class="material-symbols-outlined">fullscreen</span>
-        </button>
-
-    </div>
-
-</header>
-
-
-<!-- ======================================================
-     TOOLBAR
-     ====================================================== -->
-
-<div class="toolbar-wrap">
-
-<div class="toolbar">
-
-    <!-- undo / redo -->
-
-    <div class="tool-group">
-
-        <button class="tool-btn" id="toolbarUndo" title="Undo">
-            <span class="material-symbols-outlined">undo</span>
-        </button>
-
-        <button class="tool-btn" id="toolbarRedo" title="Redo">
-            <span class="material-symbols-outlined">redo</span>
-        </button>
-
-    </div>
-
-
-    <!-- style -->
-
-    <div class="tool-group">
-
-        <select class="tool-select" id="formatSelect">
-            <option value="p">Normal text</option>
-            <option value="h1">Heading 1</option>
-            <option value="h2">Heading 2</option>
-            <option value="h3">Heading 3</option>
-            <option value="h4">Heading 4</option>
-            <option value="h5">Heading 5</option>
-            <option value="h6">Heading 6</option>
-            <option value="blockquote">Quote</option>
-            <option value="pre">Code</option>
-        </select>
-
-        <select class="tool-select font-select" id="fontSelect">
+        <select class="select font-select" id="fontFamily">
             <option value="Inter">Inter</option>
             <option value="Poppins">Poppins</option>
             <option value="Arial">Arial</option>
             <option value="Georgia">Georgia</option>
-            <option value="Playfair Display">Playfair Display</option>
-            <option value="Merriweather">Merriweather</option>
-            <option value="Roboto Mono">Roboto Mono</option>
             <option value="Times New Roman">Times New Roman</option>
-            <option value="Courier New">Courier New</option>
+            <option value="Roboto Slab">Roboto Slab</option>
+            <option value="Playfair Display">Playfair Display</option>
+            <option value="Comic Neue">Comic Neue</option>
+            <option value="Pacifico">Pacifico</option>
         </select>
 
-        <select class="tool-select size-select" id="sizeSelect">
+        <select class="select size-select" id="fontSize">
             <option value="10px">10</option>
             <option value="12px">12</option>
             <option value="14px">14</option>
@@ -1170,12 +1127,17 @@ select.tool-select:focus{
             <option value="60px">60</option>
         </select>
 
-    </div>
+        <select class="select" id="formatBlock">
+            <option value="p">Normal</option>
+            <option value="h1">Heading 1</option>
+            <option value="h2">Heading 2</option>
+            <option value="h3">Heading 3</option>
+            <option value="h4">Heading 4</option>
+            <option value="h5">Heading 5</option>
+            <option value="h6">Heading 6</option>
+        </select>
 
-
-    <!-- text -->
-
-    <div class="tool-group">
+        <div class="separator"></div>
 
         <button class="tool-btn" data-command="bold" title="Bold">
             <span class="material-symbols-outlined">format_bold</span>
@@ -1194,60 +1156,44 @@ select.tool-select:focus{
         </button>
 
         <button class="tool-btn" data-command="superscript" title="Superscript">
-            <span class="material-symbols-outlined">superscript</span>
+            x²
         </button>
 
         <button class="tool-btn" data-command="subscript" title="Subscript">
-            <span class="material-symbols-outlined">subscript</span>
+            x₂
         </button>
 
-    </div>
+        <div class="separator"></div>
 
-
-    <!-- colours -->
-
-    <div class="tool-group">
-
-        <div class="color-control">
-
-            <input id="textColor" type="color" value="#202124">
-
-            <button class="color-button" id="textColorButton" title="Text colour">
-                <span class="color-preview" id="textColorPreview" style="background:#202124"></span>
-            </button>
-
-        </div>
-
-        <div class="color-control">
-
-            <input id="highlightColor" type="color" value="#fff176">
-
-            <button class="color-button" id="highlightButton" title="Highlight">
-                <span
-                    class="color-preview"
-                    id="highlightPreview"
-                    style="background:#fff176"
-                ></span>
-            </button>
-
-        </div>
-
-        <button class="tool-btn" id="clearFormatBtn" title="Clear formatting">
-            <span class="material-symbols-outlined">format_clear</span>
+        <button class="tool-btn" id="textColorBtn" title="Text colour">
+            <span class="material-symbols-outlined">format_color_text</span>
         </button>
 
-    </div>
+        <input
+            type="color"
+            id="textColor"
+            value="#202124"
+            style="display:none"
+        >
 
+        <button class="tool-btn" id="highlightBtn" title="Highlight">
+            <span class="material-symbols-outlined">ink_highlighter</span>
+        </button>
 
-    <!-- alignment -->
+        <input
+            type="color"
+            id="highlightColor"
+            value="#fff176"
+            style="display:none"
+        >
 
-    <div class="tool-group">
+        <div class="separator"></div>
 
         <button class="tool-btn" data-command="justifyLeft" title="Align left">
             <span class="material-symbols-outlined">format_align_left</span>
         </button>
 
-        <button class="tool-btn" data-command="justifyCenter" title="Align center">
+        <button class="tool-btn" data-command="justifyCenter" title="Center">
             <span class="material-symbols-outlined">format_align_center</span>
         </button>
 
@@ -1259,14 +1205,7 @@ select.tool-select:focus{
             <span class="material-symbols-outlined">format_align_justify</span>
         </button>
 
-    </div>
-
-
-    <!-- lists -->
-
-    <div class="tool-group">
-
-        <button class="tool-btn" data-command="insertUnorderedList" title="Bulleted list">
+        <button class="tool-btn" data-command="insertUnorderedList" title="Bullet list">
             <span class="material-symbols-outlined">format_list_bulleted</span>
         </button>
 
@@ -1282,12 +1221,7 @@ select.tool-select:focus{
             <span class="material-symbols-outlined">format_indent_increase</span>
         </button>
 
-    </div>
-
-
-    <!-- insert -->
-
-    <div class="tool-group">
+        <div class="separator"></div>
 
         <button class="tool-btn" id="linkBtn" title="Insert link">
             <span class="material-symbols-outlined">link</span>
@@ -1297,6 +1231,25 @@ select.tool-select:focus{
             <span class="material-symbols-outlined">image</span>
         </button>
 
+        <input
+            type="file"
+            id="imageInput"
+            accept="image/*"
+            multiple
+            style="display:none"
+        >
+
+        <button class="tool-btn" id="fileBtn" title="Upload file">
+            <span class="material-symbols-outlined">upload_file</span>
+        </button>
+
+        <input
+            type="file"
+            id="fileInput"
+            accept=".txt,.html,.htm,.md,.json"
+            style="display:none"
+        >
+
         <button class="tool-btn" id="tableBtn" title="Insert table">
             <span class="material-symbols-outlined">table</span>
         </button>
@@ -1305,399 +1258,277 @@ select.tool-select:focus{
             <span class="material-symbols-outlined">horizontal_rule</span>
         </button>
 
-        <button class="tool-btn" id="pageBreakBtn" title="Page break">
-            <span class="material-symbols-outlined">insert_page_break</span>
+        <button class="tool-btn" id="calloutBtn" title="Insert callout">
+            <span class="material-symbols-outlined">chat</span>
         </button>
 
-        <button class="tool-btn" id="calloutBtn" title="Callout">
-            <span class="material-symbols-outlined">info</span>
-        </button>
-
-    </div>
-
-
-    <!-- maths -->
-
-    <div class="tool-group">
+        <div class="separator"></div>
 
         <button class="tool-btn" id="mathSquareBtn" title="Maths square">
-            <span class="material-symbols-outlined">grid_3x3</span>
+            <span class="material-symbols-outlined">square</span>
+            Maths square
         </button>
 
-        <button class="tool-btn" id="equationBtn" title="Equation">
+        <button class="tool-btn" id="equationBtn" title="Maths equation">
             <span class="material-symbols-outlined">functions</span>
         </button>
 
-    </div>
+        <div class="separator"></div>
 
-
-    <!-- view -->
-
-    <div class="tool-group">
-
-        <button class="tool-btn" id="ruledBtn" title="Ruled lines">
-            <span class="material-symbols-outlined">reorder</span>
+        <button class="tool-btn" id="presentBtn" title="Present">
+            <span class="material-symbols-outlined">present_to_all</span>
+            Present
         </button>
 
-        <button class="tool-btn" id="mathGridBtn" title="Maths grid">
-            <span class="material-symbols-outlined">grid_on</span>
-        </button>
-
-        <button class="tool-btn" id="newspaperBtn" title="Newspaper mode">
-            <span class="material-symbols-outlined">newspaper</span>
+        <button class="tool-btn" id="printBtn" title="Print or PDF">
+            <span class="material-symbols-outlined">print</span>
         </button>
 
     </div>
 
+    <!-- WORKSPACE -->
+    <main class="workspace">
 
-    <!-- zoom -->
+        <section class="editor-area" id="editorArea">
+            <div class="pages" id="pages"></div>
+        </section>
 
-    <div class="tool-group">
+        <aside class="side-panel" id="sidePanel">
 
-        <button class="tool-btn" id="zoomOutBtn" title="Zoom out">
-            <span class="material-symbols-outlined">remove</span>
-        </button>
-
-        <button class="tool-btn" id="zoomLabel" title="Zoom">
-            100%
-        </button>
-
-        <button class="tool-btn" id="zoomInBtn" title="Zoom in">
-            <span class="material-symbols-outlined">add</span>
-        </button>
-
-    </div>
-
-</div>
-</div>
-
-
-<!-- ======================================================
-     WORKSPACE
-     ====================================================== -->
-
-<div class="workspace">
-
-    <aside class="side-panel" id="sidePanel">
-
-        <div class="panel-header">
-
-            <strong>Document settings</strong>
-
-            <button class="icon-btn" id="closeSettings">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-
-        </div>
-
-        <div class="panel-content">
-
-            <div class="setting">
-                <label>
-                    Ruled paper
-
-                    <span class="switch">
-                        <input id="ruledSwitch" type="checkbox">
-                        <span class="slider"></span>
-                    </span>
-                </label>
-
-                <small>Show horizontal writing lines.</small>
+            <div class="panel-head">
+                <span>Document settings</span>
+                <button class="icon-btn" id="closeSettings">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
 
+            <div class="panel-section">
 
-            <div class="setting">
-                <label>
-                    Red margin line
+                <div class="panel-title">Page style</div>
 
-                    <span class="switch">
-                        <input id="marginSwitch" type="checkbox">
-                        <span class="slider"></span>
-                    </span>
-                </label>
-
-                <small>Add a notebook-style red margin.</small>
-            </div>
-
-
-            <div class="setting">
-                <label>
-                    Maths grid
-
-                    <span class="switch">
-                        <input id="gridSwitch" type="checkbox">
-                        <span class="slider"></span>
-                    </span>
-                </label>
-
-                <small>Show visible mathematical grid squares.</small>
-            </div>
-
-
-            <div class="setting">
-                <label>
-                    Large maths grid
-
-                    <span class="switch">
-                        <input id="largeGridSwitch" type="checkbox">
-                        <span class="slider"></span>
-                    </span>
-                </label>
-            </div>
-
-
-            <div class="setting">
-                <label>
-                    Newspaper mode
-
-                    <span class="switch">
-                        <input id="newspaperSwitch" type="checkbox">
-                        <span class="slider"></span>
-                    </span>
-                </label>
-
-                <small>Split the document into two newspaper columns.</small>
-            </div>
-
-
-            <div class="setting">
-                <label>
-                    Dark page
-
-                    <span class="switch">
-                        <input id="darkSwitch" type="checkbox">
-                        <span class="slider"></span>
-                    </span>
-                </label>
-            </div>
-
-
-            <div class="setting">
-                <label>
-                    Focus mode
-
-                    <span class="switch">
-                        <input id="focusSwitch" type="checkbox">
-                        <span class="slider"></span>
-                    </span>
-                </label>
-            </div>
-
-
-            <div class="setting">
-                <label>
-                    Header
-
-                    <span class="switch">
-                        <input id="headerSwitch" type="checkbox" checked>
-                        <span class="slider"></span>
-                    </span>
-                </label>
-            </div>
-
-
-            <div class="setting">
-                <label>
-                    Footer
-
-                    <span class="switch">
-                        <input id="footerSwitch" type="checkbox" checked>
-                        <span class="slider"></span>
-                    </span>
-                </label>
-            </div>
-
-        </div>
-
-    </aside>
-
-
-    <main class="editor-area" id="editorArea">
-
-        <div class="pages">
-
-            <article class="page" id="documentPage">
-
-                <div class="page-header" id="pageHeader">
-                    DOCBIRD • DOCUMENT
+                <div class="option">
+                    <span>Ruled lines</span>
+                    <input type="checkbox" id="ruledToggle">
                 </div>
 
-                <div
-                    class="document-content"
-                    id="editor"
-                    contenteditable="true"
-                    spellcheck="true"
-                    tabindex="0"
-                >
-                    <h1>Untitled document</h1>
-
-                    <p>
-                        Start writing your document here.
-                    </p>
-
-                    <p>
-                        Select text and then choose a font or size to change
-                        <strong>only the selected text</strong>.
-                    </p>
+                <div class="option">
+                    <span>Red margin line</span>
+                    <input type="checkbox" id="marginToggle">
                 </div>
 
-                <div class="page-footer" id="pageFooter">
-                    <span>DocBird</span>
-                    <span>Page 1</span>
+                <div class="option">
+                    <span>Maths grid</span>
+                    <input type="checkbox" id="gridToggle">
                 </div>
 
-            </article>
+                <div class="option">
+                    <span>Newspaper mode</span>
+                    <input type="checkbox" id="newspaperToggle">
+                </div>
 
-        </div>
+            </div>
+
+            <div class="panel-section">
+
+                <div class="panel-title">Display</div>
+
+                <div class="option">
+                    <span>Dark workspace</span>
+                    <input type="checkbox" id="darkToggle">
+                </div>
+
+                <div class="option">
+                    <span>Focus mode</span>
+                    <input type="checkbox" id="focusToggle">
+                </div>
+
+                <div class="option">
+                    <span>Show header</span>
+                    <input type="checkbox" id="headerToggle" checked>
+                </div>
+
+                <div class="option">
+                    <span>Show footer</span>
+                    <input type="checkbox" id="footerToggle" checked>
+                </div>
+
+            </div>
+
+            <div class="panel-section">
+
+                <div class="panel-title">Paper size</div>
+
+                <select class="panel-select" id="paperSize">
+                    <option value="A4">A4</option>
+                    <option value="A5">A5</option>
+                    <option value="letter">Letter</option>
+                    <option value="legal">Legal</option>
+                </select>
+
+            </div>
+
+            <div class="panel-section">
+
+                <div class="panel-title">Page actions</div>
+
+                <button class="tool-btn" style="width:100%;margin-bottom:7px" id="duplicatePageBtn">
+                    <span class="material-symbols-outlined">content_copy</span>
+                    Duplicate current page
+                </button>
+
+                <button class="tool-btn" style="width:100%;margin-bottom:7px" id="deletePageBtn">
+                    <span class="material-symbols-outlined">delete</span>
+                    Delete current page
+                </button>
+
+                <button class="tool-btn" style="width:100%" id="clearFormattingBtn">
+                    <span class="material-symbols-outlined">format_clear</span>
+                    Clear formatting
+                </button>
+
+            </div>
+
+        </aside>
 
     </main>
 
-</div>
+    <!-- STATUS -->
+    <footer class="statusbar">
 
+        <div id="pageStatus">Page 1 of 1</div>
 
-<!-- ======================================================
-     STATUS
-     ====================================================== -->
-
-<footer class="statusbar">
-
-    <div class="status-left">
-        <span id="saveStatus">Saved</span>
-        <span id="wordCount">0 words</span>
-        <span id="charCount">0 characters</span>
-    </div>
-
-    <div class="status-right">
-        <span id="readingTime">0 min read</span>
-        <span id="selectionInfo"></span>
-    </div>
-
-</footer>
-
-</div>
-
-
-<!-- ======================================================
-     FIND MODAL
-     ====================================================== -->
-
-<div class="modal-backdrop" id="findModal">
-
-    <div class="modal">
-
-        <div class="modal-header">
-            <h2>Find and replace</h2>
-
-            <button class="icon-btn" id="closeFind">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+        <div class="stats">
+            <span id="wordCount">0 words</span>
+            <span id="charCount">0 characters</span>
+            <span id="readingTime">0 min read</span>
         </div>
 
-        <div class="modal-body">
+        <div class="status-right">
 
-            <label>
-                Find
-                <input
-                    id="findInput"
-                    type="text"
-                    style="
-                        width:100%;
-                        margin-top:7px;
-                        padding:11px;
-                        border:1px solid #dfe3e8;
-                        border-radius:9px;
-                    "
-                >
-            </label>
-
-            <br>
-
-            <label>
-                Replace with
-                <input
-                    id="replaceInput"
-                    type="text"
-                    style="
-                        width:100%;
-                        margin-top:7px;
-                        padding:11px;
-                        border:1px solid #dfe3e8;
-                        border-radius:9px;
-                    "
-                >
-            </label>
+            <div class="zoom">
+                <button id="zoomOut">−</button>
+                <span id="zoomLabel">100%</span>
+                <button id="zoomIn">+</button>
+            </div>
 
         </div>
 
-        <div class="modal-actions">
-
-            <button class="secondary-btn" id="findNext">
-                Find next
-            </button>
-
-            <button class="secondary-btn" id="replaceOne">
-                Replace
-            </button>
-
-            <button class="primary-btn" id="replaceAll">
-                Replace all
-            </button>
-
-        </div>
-
-    </div>
+    </footer>
 
 </div>
 
 
-<!-- ======================================================
-     EQUATION MODAL
-     ====================================================== -->
+<!-- PRESENTATION -->
+
+<div class="presentation" id="presentation">
+
+    <div class="presentation-top">
+
+        <button class="icon-btn" id="presentationClose" title="Close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <div class="presentation-title" id="presentationTitle">
+            DocBird presentation
+        </div>
+
+        <div class="presentation-tools">
+
+            <button class="icon-btn" id="penBtn" title="Pen">
+                <span class="material-symbols-outlined">edit</span>
+            </button>
+
+            <button class="icon-btn" id="highlighterBtn" title="Highlighter">
+                <span class="material-symbols-outlined">ink_highlighter</span>
+            </button>
+
+            <button class="icon-btn" id="eraserBtn" title="Eraser">
+                <span class="material-symbols-outlined">ink_eraser</span>
+            </button>
+
+            <input
+                class="annotation-color"
+                id="annotationColor"
+                type="color"
+                value="#ff3b30"
+            >
+
+            <select class="annotation-size" id="annotationSize">
+                <option value="3">3</option>
+                <option value="5" selected>5</option>
+                <option value="8">8</option>
+                <option value="12">12</option>
+                <option value="18">18</option>
+            </select>
+
+            <button class="icon-btn" id="clearAnnotations" title="Clear annotations">
+                <span class="material-symbols-outlined">delete_sweep</span>
+            </button>
+
+        </div>
+
+        <button class="icon-btn" id="annotateBtn" title="Annotate">
+            <span class="material-symbols-outlined">draw</span>
+        </button>
+
+        <button class="icon-btn" id="presentationPrev" title="Previous page">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+
+        <span id="presentationCounter">1 / 1</span>
+
+        <button class="icon-btn" id="presentationNext" title="Next page">
+            <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+        <button class="icon-btn" id="presentationFullscreen" title="Fullscreen">
+            <span class="material-symbols-outlined">fullscreen</span>
+        </button>
+
+    </div>
+
+    <div class="presentation-stage" id="presentationStage">
+
+        <div class="presentation-page" id="presentationPage">
+
+            <div class="presentation-content" id="presentationContent"></div>
+
+            <canvas
+                class="annotation-canvas"
+                id="annotationCanvas"
+            ></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- EQUATION MODAL -->
 
 <div class="modal-backdrop" id="equationModal">
 
     <div class="modal">
 
-        <div class="modal-header">
+        <h2>Insert maths equation</h2>
 
-            <h2>Insert equation</h2>
+        <p style="color:#666">
+            Type your equation below. It will be inserted as a large maths block.
+        </p>
 
-            <button class="icon-btn" id="closeEquation">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-
-        </div>
-
-        <div class="modal-body">
-
-            <p style="color:#6b7280;font-size:13px">
-                Type an equation or mathematical expression.
-            </p>
-
-            <input
-                id="equationInput"
-                type="text"
-                placeholder="x² + y² = z²"
-                style="
-                    width:100%;
-                    padding:14px;
-                    font-family:'Roboto Mono',monospace;
-                    border:1px solid #dfe3e8;
-                    border-radius:10px;
-                    font-size:16px;
-                    outline:none;
-                "
-            >
-
-        </div>
+        <input
+            id="equationInput"
+            placeholder="Example: 2x + 5 = 17"
+        >
 
         <div class="modal-actions">
 
-            <button class="secondary-btn" id="cancelEquation">
+            <button class="modal-btn" id="equationCancel">
                 Cancel
             </button>
 
-            <button class="primary-btn" id="insertEquation">
+            <button class="modal-btn primary-modal" id="equationInsert">
                 Insert equation
             </button>
 
@@ -1708,1874 +1539,1496 @@ select.tool-select:focus{
 </div>
 
 
-<!-- ======================================================
-     PRESENTATION
-     ====================================================== -->
+<!-- FIND MODAL -->
 
-<div class="presentation" id="presentation">
+<div class="modal-backdrop" id="findModal">
 
-    <div class="presentation-title" id="presentationTitle">
-        Untitled document
-    </div>
+    <div class="modal">
 
-    <div class="presentation-help">
-        Esc to exit
-    </div>
+        <h2>Find and replace</h2>
 
-    <div class="presentation-stage">
+        <input
+            id="findInput"
+            placeholder="Find..."
+            style="margin-bottom:9px"
+        >
 
-        <div class="presentation-page" id="presentationPage">
+        <input
+            id="replaceInput"
+            placeholder="Replace with..."
+        >
 
-            <div
-                class="document-content"
-                id="presentationContent"
-            ></div>
+        <div class="modal-actions">
+
+            <button class="modal-btn" id="findCancel">
+                Close
+            </button>
+
+            <button class="modal-btn" id="findNext">
+                Find
+            </button>
+
+            <button class="modal-btn primary-modal" id="replaceAll">
+                Replace all
+            </button>
 
         </div>
-
-    </div>
-
-
-    <canvas id="annotationCanvas"></canvas>
-
-
-    <div class="presentation-toolbar">
-
-        <button
-            class="present-btn"
-            id="exitPresentation"
-            title="Exit presentation"
-        >
-            <span class="material-symbols-outlined">close_fullscreen</span>
-        </button>
-
-
-        <button
-            class="present-btn"
-            id="prevPresentation"
-            title="Previous"
-        >
-            <span class="material-symbols-outlined">arrow_back</span>
-        </button>
-
-
-        <button
-            class="present-btn"
-            id="nextPresentation"
-            title="Next"
-        >
-            <span class="material-symbols-outlined">arrow_forward</span>
-        </button>
-
-
-        <button
-            class="present-btn"
-            id="penTool"
-            title="Pen"
-        >
-            <span class="material-symbols-outlined">edit</span>
-        </button>
-
-
-        <button
-            class="present-btn"
-            id="highlighterTool"
-            title="Highlighter"
-        >
-            <span class="material-symbols-outlined">ink_highlighter</span>
-        </button>
-
-
-        <button
-            class="present-btn"
-            id="eraserTool"
-            title="Eraser"
-        >
-            <span class="material-symbols-outlined">ink_eraser</span>
-        </button>
-
-
-        <button
-            class="present-btn"
-            id="clearAnnotations"
-            title="Clear annotations"
-        >
-            <span class="material-symbols-outlined">delete_sweep</span>
-        </button>
-
-
-        <input
-            class="present-color"
-            id="annotationColor"
-            type="color"
-            value="#ff3b30"
-            title="Annotation colour"
-        >
-
-
-        <input
-            class="present-size"
-            id="annotationSize"
-            type="range"
-            min="2"
-            max="30"
-            value="5"
-            title="Pen size"
-        >
-
-
-        <button
-            class="present-btn"
-            id="presentationFullscreen"
-            title="Fullscreen"
-        >
-            <span class="material-symbols-outlined">fullscreen</span>
-        </button>
 
     </div>
 
 </div>
 
 
-<input
-    id="fileInput"
-    type="file"
-    multiple
-    accept="image/*,.txt,.html,.htm,.md,.json"
-    hidden
->
-
-
-<div class="toast" id="toast"></div>
-
-
 <script>
+"use strict";
 
 /* =========================================================
-   DOCBIRD EDITOR JAVASCRIPT
+   DOCBIRD EDITOR
    ========================================================= */
 
-const editor = document.getElementById("editor");
-const documentPage = document.getElementById("documentPage");
-const documentTitle = document.getElementById("documentTitle");
-const saveStatus = document.getElementById("saveStatus");
+const STORAGE_KEY = "DocBirdDocumentsV4";
+const CURRENT_DOC_KEY = "DocBirdCurrentDocumentV4";
 
-const STORAGE_KEY = "docbird_docs";
-const CURRENT_KEY = "docbird_current_document";
+let documentData = {
+    id: "doc_" + Date.now(),
+    title: "Untitled document",
+    pages: [],
+    settings: {
+        ruled:false,
+        margin:false,
+        grid:false,
+        newspaper:false,
+        dark:false,
+        focus:false,
+        header:true,
+        footer:true,
+        paper:"A4"
+    }
+};
 
-let currentDocumentId = null;
+let activePageId = null;
+let activeEditor = null;
 let savedRange = null;
-let saveTimer = null;
-let zoom = 1;
+let savedEditor = null;
+let zoomLevel = 1;
 
+let presentationIndex = 0;
+let annotationMode = "pen";
+let drawing = false;
+let currentStroke = null;
 
-/* =========================================================
-   UTILITIES
-   ========================================================= */
-
-function $(id){
-    return document.getElementById(id);
-}
-
-function showToast(message){
-
-    const toast = $("toast");
-
-    toast.textContent = message;
-    toast.classList.add("show");
-
-    clearTimeout(toast._timer);
-
-    toast._timer = setTimeout(()=>{
-        toast.classList.remove("show");
-    },2200);
-}
-
-
-function escapeHTML(text){
-
-    return text
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-}
-
+const annotationStrokes = {};
 
 /* =========================================================
-   DOCUMENT STORAGE
+   HELPERS
    ========================================================= */
 
-function getDocuments(){
+function uid(prefix="page"){
+    return prefix + "_" + Date.now() + "_" +
+        Math.random().toString(36).slice(2,9);
+}
+
+function escapeHTML(value){
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function currentPage(){
+    return documentData.pages.find(p => p.id === activePageId)
+        || documentData.pages[0];
+}
+
+function saveSelection(){
+    const sel = window.getSelection();
+
+    if(
+        sel &&
+        sel.rangeCount &&
+        activeEditor &&
+        activeEditor.contains(sel.anchorNode)
+    ){
+        savedRange = sel.getRangeAt(0).cloneRange();
+        savedEditor = activeEditor;
+    }
+}
+
+function restoreSelection(){
+    if(!savedRange || !savedEditor) return false;
+
+    const sel = window.getSelection();
 
     try{
-
-        return JSON.parse(
-            localStorage.getItem(STORAGE_KEY) || "[]"
-        );
-
-    }catch{
-
-        return [];
-
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+        savedEditor.focus();
+        return true;
+    }catch(e){
+        return false;
     }
-
 }
 
+function ensureSelection(){
+    if(restoreSelection()) return;
 
-function saveDocuments(documents){
+    if(activeEditor){
+        activeEditor.focus();
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(documents)
-    );
+        const range = document.createRange();
+        range.selectNodeContents(activeEditor);
+        range.collapse(false);
 
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        savedRange = range.cloneRange();
+        savedEditor = activeEditor;
+    }
 }
 
-
-function createDocument(){
-
-    currentDocumentId =
-        "doc_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2,8);
-
-    const doc = {
-
-        id:currentDocumentId,
-
-        title:"Untitled document",
-
-        content:editor.innerHTML,
-
-        updated:Date.now(),
-
-        settings:getSettings()
-
-    };
-
-    const docs = getDocuments();
-
-    docs.unshift(doc);
-
-    saveDocuments(docs);
-
-    localStorage.setItem(
-        CURRENT_KEY,
-        currentDocumentId
-    );
-
-}
-
+/* =========================================================
+   LOAD / SAVE
+   ========================================================= */
 
 function loadDocument(){
 
-    const docs = getDocuments();
+    let raw = localStorage.getItem(CURRENT_DOC_KEY);
 
-    const current =
-        localStorage.getItem(CURRENT_KEY);
+    if(raw){
+        try{
+            const loaded = JSON.parse(raw);
 
-    let doc =
-        docs.find(d => d.id === current);
+            documentData = {
+                ...documentData,
+                ...loaded,
+                settings:{
+                    ...documentData.settings,
+                    ...(loaded.settings || {})
+                }
+            };
 
-    if(!doc){
+            if(!Array.isArray(documentData.pages)){
+                documentData.pages = [{
+                    id:uid(),
+                    content:loaded.content || "<p><br></p>"
+                }];
+            }
 
-        if(docs.length){
-
-            doc = docs[0];
-
-            currentDocumentId = doc.id;
-
-        }else{
-
-            createDocument();
-
-            return;
-
+        }catch(e){
+            console.warn("Could not load document",e);
         }
-
-    }else{
-
-        currentDocumentId = doc.id;
-
     }
 
-    documentTitle.value =
-        doc.title || "Untitled document";
+    if(!documentData.pages.length){
+        documentData.pages = [{
+            id:uid(),
+            content:
+                "<h1>Welcome to DocBird</h1>" +
+                "<p>Start writing your document here.</p>"
+        }];
+    }
 
-    editor.innerHTML =
-        doc.content || "<p></p>";
+    document.getElementById("documentTitle").value =
+        documentData.title || "Untitled document";
 
-    applySettings(
-        doc.settings || {}
-    );
+    activePageId = documentData.pages[0].id;
 
+    applySettings();
+    renderPages(activePageId);
 }
 
+function collectPages(){
+
+    document.querySelectorAll(".page").forEach(page => {
+
+        const id = page.dataset.pageId;
+        const editor = page.querySelector(".document-content");
+
+        const item = documentData.pages.find(p => p.id === id);
+
+        if(item && editor){
+            item.content = editor.innerHTML;
+        }
+    });
+}
 
 function saveDocument(){
 
-    if(!currentDocumentId){
+    collectPages();
 
-        createDocument();
+    documentData.title =
+        document.getElementById("documentTitle").value.trim()
+        || "Untitled document";
 
-    }
-
-    const docs = getDocuments();
-
-    const index =
-        docs.findIndex(
-            d => d.id === currentDocumentId
-        );
-
-    const doc = {
-
-        id:currentDocumentId,
-
-        title:
-            documentTitle.value.trim() ||
-            "Untitled document",
-
-        content:editor.innerHTML,
-
-        updated:Date.now(),
-
-        settings:getSettings()
-
+    documentData.settings = {
+        ruled:document.getElementById("ruledToggle").checked,
+        margin:document.getElementById("marginToggle").checked,
+        grid:document.getElementById("gridToggle").checked,
+        newspaper:document.getElementById("newspaperToggle").checked,
+        dark:document.getElementById("darkToggle").checked,
+        focus:document.getElementById("focusToggle").checked,
+        header:document.getElementById("headerToggle").checked,
+        footer:document.getElementById("footerToggle").checked,
+        paper:document.getElementById("paperSize").value
     };
 
-    if(index >= 0){
-
-        docs[index] = doc;
-
-    }else{
-
-        docs.unshift(doc);
-
-    }
-
-    saveDocuments(docs);
-
     localStorage.setItem(
-        CURRENT_KEY,
-        currentDocumentId
+        CURRENT_DOC_KEY,
+        JSON.stringify(documentData)
     );
 
-    saveStatus.textContent =
+    document.getElementById("saveStatus").textContent =
         "Saved just now";
 
     setTimeout(()=>{
-
-        saveStatus.textContent =
-            "Saved";
-
+        document.getElementById("saveStatus").textContent =
+            "Saved locally";
     },1500);
-
 }
-
-
-function autoSave(){
-
-    saveStatus.textContent =
-        "Saving...";
-
-    clearTimeout(saveTimer);
-
-    saveTimer =
-        setTimeout(saveDocument,500);
-
-}
-
 
 /* =========================================================
-   SETTINGS
+   PAGE RENDERING
    ========================================================= */
 
-function getSettings(){
+function renderPages(focusId=null){
 
-    return {
+    collectPages();
 
-        ruled:
-            $("ruledSwitch").checked,
+    const container = document.getElementById("pages");
+    container.innerHTML = "";
 
-        margin:
-            $("marginSwitch").checked,
+    documentData.pages.forEach((page,index)=>{
 
-        grid:
-            $("gridSwitch").checked,
+        const article = document.createElement("article");
 
-        largeGrid:
-            $("largeGridSwitch").checked,
+        article.className = "page";
+        article.dataset.pageId = page.id;
 
-        newspaper:
-            $("newspaperSwitch").checked,
+        if(page.id === activePageId){
+            article.classList.add("selected-page");
+        }
 
-        dark:
-            $("darkSwitch").checked,
+        if(documentData.settings.ruled)
+            article.classList.add("ruled");
 
-        focus:
-            $("focusSwitch").checked,
+        if(documentData.settings.margin)
+            article.classList.add("margin-line");
 
-        header:
-            $("headerSwitch").checked,
+        if(documentData.settings.grid)
+            article.classList.add("math-grid");
 
-        footer:
-            $("footerSwitch").checked
+        if(documentData.settings.newspaper)
+            article.classList.add("newspaper");
 
+        article.innerHTML = `
+
+            <div class="page-controls">
+
+                <button
+                    class="page-control"
+                    data-action="new"
+                    title="New page after this page"
+                >
+                    <span class="material-symbols-outlined">add</span>
+                </button>
+
+                <button
+                    class="page-control"
+                    data-action="duplicate"
+                    title="Duplicate page"
+                >
+                    <span class="material-symbols-outlined">content_copy</span>
+                </button>
+
+                <button
+                    class="page-control"
+                    data-action="delete"
+                    title="Delete page"
+                >
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+
+            </div>
+
+            <div
+                class="page-header"
+                ${documentData.settings.header ? "" : 'style="display:none"'}
+            >
+                DOCBIRD • DOCUMENT
+            </div>
+
+            <div
+                class="document-content"
+                contenteditable="true"
+                spellcheck="true"
+                data-page-id="${page.id}"
+            >
+                ${page.content || "<p><br></p>"}
+            </div>
+
+            <div
+                class="page-footer"
+                ${documentData.settings.footer ? "" : 'style="display:none"'}
+            >
+                Page ${index + 1} of ${documentData.pages.length}
+            </div>
+        `;
+
+        container.appendChild(article);
+
+        const editor = article.querySelector(".document-content");
+
+        editor.addEventListener("focus",()=>{
+            activePageId = page.id;
+            activeEditor = editor;
+
+            document.querySelectorAll(".page")
+                .forEach(p=>p.classList.remove("selected-page"));
+
+            article.classList.add("selected-page");
+
+            updateStatus();
+        });
+
+        editor.addEventListener("mouseup",saveSelection);
+        editor.addEventListener("keyup",saveSelection);
+        editor.addEventListener("input",()=>{
+            saveSelection();
+            updateStatus();
+            debounceSave();
+        });
+
+        editor.addEventListener("click",()=>{
+            activePageId = page.id;
+            activeEditor = editor;
+            updateStatus();
+        });
+
+        article.addEventListener("mousedown",()=>{
+            activePageId = page.id;
+            activeEditor = editor;
+
+            document.querySelectorAll(".page")
+                .forEach(p=>p.classList.remove("selected-page"));
+
+            article.classList.add("selected-page");
+
+            updateStatus();
+        });
+
+        article.querySelectorAll(".page-control")
+            .forEach(btn=>{
+
+                btn.addEventListener("click",(event)=>{
+
+                    event.stopPropagation();
+
+                    const action = btn.dataset.action;
+
+                    if(action === "new"){
+                        createPage(page.id,true);
+                    }
+
+                    if(action === "duplicate"){
+                        duplicatePage(page.id);
+                    }
+
+                    if(action === "delete"){
+                        deletePage(page.id);
+                    }
+
+                });
+
+            });
+    });
+
+    if(focusId){
+        activePageId = focusId;
+    }
+
+    const target = document.querySelector(
+        `.page[data-page-id="${activePageId}"]`
+    );
+
+    if(target){
+
+        target.classList.add("selected-page");
+
+        activeEditor =
+            target.querySelector(".document-content");
+
+        if(focusId){
+            setTimeout(()=>{
+                activeEditor.focus();
+
+                const range = document.createRange();
+                range.selectNodeContents(activeEditor);
+                range.collapse(false);
+
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+
+                savedRange = range.cloneRange();
+                savedEditor = activeEditor;
+
+                target.scrollIntoView({
+                    behavior:"smooth",
+                    block:"center"
+                });
+            },50);
+        }
+    }
+
+    updateStatus();
+    applyZoom();
+}
+
+/* =========================================================
+   NEW PAGE
+   ========================================================= */
+
+function createPage(afterId=null,focus=true){
+
+    collectPages();
+
+    const newPage = {
+        id:uid("page"),
+        content:"<p><br></p>"
     };
 
+    if(afterId){
+
+        const index = documentData.pages
+            .findIndex(p=>p.id === afterId);
+
+        if(index >= 0){
+            documentData.pages.splice(
+                index + 1,
+                0,
+                newPage
+            );
+        }else{
+            documentData.pages.push(newPage);
+        }
+
+    }else{
+        documentData.pages.push(newPage);
+    }
+
+    activePageId = newPage.id;
+
+    renderPages(focus ? newPage.id : activePageId);
+
+    saveDocument();
 }
 
+function duplicatePage(pageId){
 
-function applySettings(settings){
+    collectPages();
 
-    $("ruledSwitch").checked =
-        !!settings.ruled;
+    const source = documentData.pages
+        .find(p=>p.id === pageId);
 
-    $("marginSwitch").checked =
-        !!settings.margin;
+    if(!source) return;
 
-    $("gridSwitch").checked =
-        !!settings.grid;
+    const copy = {
+        id:uid("page"),
+        content:source.content
+    };
 
-    $("largeGridSwitch").checked =
-        !!settings.largeGrid;
+    const index = documentData.pages
+        .findIndex(p=>p.id === pageId);
 
-    $("newspaperSwitch").checked =
-        !!settings.newspaper;
+    documentData.pages.splice(index+1,0,copy);
 
-    $("darkSwitch").checked =
-        !!settings.dark;
+    activePageId = copy.id;
 
-    $("focusSwitch").checked =
-        !!settings.focus;
+    renderPages(copy.id);
 
-    $("headerSwitch").checked =
-        settings.header !== false;
-
-    $("footerSwitch").checked =
-        settings.footer !== false;
-
-    updatePageModes();
-
+    saveDocument();
 }
 
+function deletePage(pageId){
 
-function updatePageModes(){
+    if(documentData.pages.length === 1){
+        alert("A document must contain at least one page.");
+        return;
+    }
 
-    documentPage.classList.toggle(
-        "ruled",
-        $("ruledSwitch").checked
-    );
+    const index = documentData.pages
+        .findIndex(p=>p.id === pageId);
 
-    documentPage.classList.toggle(
-        "margin-line",
-        $("marginSwitch").checked
-    );
+    if(index < 0) return;
 
-    documentPage.classList.toggle(
-        "math-grid",
-        $("gridSwitch").checked
-    );
+    documentData.pages.splice(index,1);
 
-    documentPage.classList.toggle(
-        "math-grid-large",
-        $("largeGridSwitch").checked
-    );
+    if(activePageId === pageId){
+        activePageId =
+            documentData.pages[
+                Math.max(0,index-1)
+            ].id;
+    }
 
-    documentPage.classList.toggle(
-        "newspaper",
-        $("newspaperSwitch").checked
-    );
+    renderPages(activePageId);
 
-    documentPage.classList.toggle(
-        "dark",
-        $("darkSwitch").checked
-    );
-
-    documentPage.classList.toggle(
-        "focus",
-        $("focusSwitch").checked
-    );
-
-    $("pageHeader").style.display =
-        $("headerSwitch").checked
-            ? ""
-            : "none";
-
-    $("pageFooter").style.display =
-        $("footerSwitch").checked
-            ? ""
-            : "none";
-
-    autoSave();
-
+    saveDocument();
 }
-
 
 /* =========================================================
-   SELECTION HANDLING
+   SELECTION FORMATTING
    ========================================================= */
 
-function saveSelection(){
+function wrapSelection(styleObject){
 
-    const selection =
-        window.getSelection();
+    ensureSelection();
 
-    if(
-        selection &&
-        selection.rangeCount > 0 &&
-        editor.contains(selection.anchorNode)
-    ){
+    const sel = window.getSelection();
 
-        savedRange =
-            selection.getRangeAt(0).cloneRange();
+    if(!sel || !sel.rangeCount) return;
 
+    const range = sel.getRangeAt(0);
+
+    if(range.collapsed){
+        return;
     }
 
-}
+    const span = document.createElement("span");
 
-
-function restoreSelection(){
-
-    if(!savedRange)
-        return false;
-
-    const selection =
-        window.getSelection();
-
-    selection.removeAllRanges();
-
-    selection.addRange(
-        savedRange
-    );
-
-    return true;
-
-}
-
-
-editor.addEventListener(
-    "mouseup",
-    saveSelection
-);
-
-editor.addEventListener(
-    "keyup",
-    saveSelection
-);
-
-editor.addEventListener(
-    "touchend",
-    saveSelection
-);
-
-
-/* =========================================================
-   SELECTED TEXT FORMATTING
-   ========================================================= */
-
-function wrapSelectedText(styles){
-
-    if(!restoreSelection()){
-
-        showToast(
-            "Select some text first"
-        );
-
-        return false;
-
-    }
-
-    const selection =
-        window.getSelection();
-
-    if(
-        selection.rangeCount === 0 ||
-        selection.isCollapsed
-    ){
-
-        showToast(
-            "Select some text first"
-        );
-
-        return false;
-
-    }
-
-    const range =
-        selection.getRangeAt(0);
-
-    const span =
-        document.createElement("span");
-
-    Object.assign(
-        span.style,
-        styles
-    );
+    Object.entries(styleObject).forEach(([key,value])=>{
+        span.style[key] = value;
+    });
 
     try{
 
-        const contents =
-            range.extractContents();
+        const contents = range.extractContents();
 
         span.appendChild(contents);
 
         range.insertNode(span);
 
-        selection.removeAllRanges();
+        sel.removeAllRanges();
 
-        const newRange =
-            document.createRange();
-
+        const newRange = document.createRange();
         newRange.selectNodeContents(span);
+        sel.addRange(newRange);
 
-        selection.addRange(newRange);
+        savedRange = newRange.cloneRange();
+        savedEditor = activeEditor;
 
-        savedRange =
-            newRange.cloneRange();
+        activeEditor.focus();
 
-        editor.focus();
+        debounceSave();
 
-        autoSave();
-
-        return true;
-
-    }catch(error){
-
-        console.error(error);
-
-        return false;
-
+    }catch(e){
+        console.warn(e);
     }
-
 }
 
+function command(command,value=null){
 
-/* FONT */
+    ensureSelection();
 
-$("fontSelect").addEventListener(
-    "change",
-    function(){
-
-        const font =
-            this.value;
-
-        const applied =
-            wrapSelectedText({
-
-                fontFamily:
-                    `"${font}", sans-serif`
-
-            });
-
-        if(applied){
-
-            showToast(
-                font +
-                " applied to selected text"
-            );
-
-        }else{
-
-            this.value = "Inter";
-
-        }
-
+    try{
+        document.execCommand(command,false,value);
+        saveSelection();
+        updateStatus();
+        debounceSave();
+    }catch(e){
+        console.warn(e);
     }
-);
-
-
-/* SIZE */
-
-$("sizeSelect").addEventListener(
-    "change",
-    function(){
-
-        const size =
-            this.value;
-
-        const applied =
-            wrapSelectedText({
-
-                fontSize:size
-
-            });
-
-        if(applied){
-
-            showToast(
-                size +
-                " applied to selected text"
-            );
-
-        }else{
-
-            this.value = "16px";
-
-        }
-
-    }
-);
-
+}
 
 /* =========================================================
-   BASIC COMMANDS
+   TOOLBAR
    ========================================================= */
 
-document
-    .querySelectorAll("[data-command]")
-    .forEach(button => {
+document.querySelectorAll("[data-command]")
+    .forEach(button=>{
 
-        button.addEventListener(
-            "mousedown",
-            e => e.preventDefault()
-        );
+        button.addEventListener("mousedown",(event)=>{
+            event.preventDefault();
+        });
 
-        button.addEventListener(
-            "click",
-            ()=>{
-
-                editor.focus();
-
-                document.execCommand(
-                    button.dataset.command,
-                    false,
-                    null
-                );
-
-                updateToolbarStates();
-
-                autoSave();
-
-            }
-        );
+        button.addEventListener("click",()=>{
+            command(button.dataset.command);
+        });
 
     });
 
+document.getElementById("fontFamily")
+    .addEventListener("mousedown",saveSelection);
 
-/* =========================================================
-   FORMAT
-   ========================================================= */
+document.getElementById("fontFamily")
+    .addEventListener("change",function(){
 
-$("formatSelect").addEventListener(
-    "change",
-    function(){
-
-        editor.focus();
-
-        document.execCommand(
-            "formatBlock",
-            false,
-            this.value
-        );
-
-        autoSave();
-
-    }
-);
-
-
-/* =========================================================
-   TEXT COLOUR
-   ========================================================= */
-
-$("textColorButton").addEventListener(
-    "click",
-    ()=>{
-        $("textColor").click();
-    }
-);
-
-$("textColor").addEventListener(
-    "change",
-    function(){
-
-        wrapSelectedText({
-
-            color:this.value
-
+        wrapSelection({
+            fontFamily:`"${this.value}", sans-serif`
         });
 
-        $("textColorPreview")
-            .style.background =
-            this.value;
+    });
 
-    }
-);
+document.getElementById("fontSize")
+    .addEventListener("mousedown",saveSelection);
 
+document.getElementById("fontSize")
+    .addEventListener("change",function(){
+
+        wrapSelection({
+            fontSize:this.value
+        });
+
+    });
+
+document.getElementById("formatBlock")
+    .addEventListener("change",function(){
+
+        ensureSelection();
+
+        command("formatBlock",this.value);
+
+    });
+
+/* TEXT COLOR */
+
+document.getElementById("textColorBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
+
+document.getElementById("textColorBtn")
+    .addEventListener("click",()=>{
+        document.getElementById("textColor").click();
+    });
+
+document.getElementById("textColor")
+    .addEventListener("change",function(){
+
+        wrapSelection({
+            color:this.value
+        });
+
+    });
+
+/* HIGHLIGHT */
+
+document.getElementById("highlightBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
+
+document.getElementById("highlightBtn")
+    .addEventListener("click",()=>{
+        document.getElementById("highlightColor").click();
+    });
+
+document.getElementById("highlightColor")
+    .addEventListener("change",function(){
+
+        wrapSelection({
+            backgroundColor:this.value
+        });
+
+    });
 
 /* =========================================================
-   HIGHLIGHT
+   INSERT HELPERS
    ========================================================= */
 
-$("highlightButton").addEventListener(
-    "click",
-    ()=>{
-        $("highlightColor").click();
+function insertHTMLAtSelection(html){
+
+    ensureSelection();
+
+    const sel = window.getSelection();
+
+    if(!sel || !sel.rangeCount){
+        activeEditor.innerHTML += html;
+        return;
     }
-);
 
-$("highlightColor").addEventListener(
-    "change",
-    function(){
+    const range = sel.getRangeAt(0);
 
-        const applied =
-            wrapSelectedText({
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
 
-                backgroundColor:this.value
+    const fragment = document.createDocumentFragment();
 
-            });
-
-        $("highlightPreview")
-            .style.background =
-            this.value;
-
+    while(temp.firstChild){
+        fragment.appendChild(temp.firstChild);
     }
-);
 
+    range.deleteContents();
+    range.insertNode(fragment);
 
-/* =========================================================
-   CLEAR FORMAT
-   ========================================================= */
+    range.collapse(false);
 
-$("clearFormatBtn").addEventListener(
-    "click",
-    ()=>{
+    sel.removeAllRanges();
+    sel.addRange(range);
 
-        if(!restoreSelection())
-            return;
-
-        document.execCommand(
-            "removeFormat",
-            false,
-            null
-        );
-
-        autoSave();
-
-    }
-);
-
-
-/* =========================================================
-   UNDO / REDO
-   ========================================================= */
-
-function undo(){
-
-    editor.focus();
-
-    document.execCommand(
-        "undo"
-    );
-
-    autoSave();
-
+    saveSelection();
+    debounceSave();
 }
 
-function redo(){
+/* MATH SQUARE */
 
-    editor.focus();
+document.getElementById("mathSquareBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
 
-    document.execCommand(
-        "redo"
-    );
+document.getElementById("mathSquareBtn")
+    .addEventListener("click",()=>{
 
-    autoSave();
+        insertHTMLAtSelection(`
+            <span
+                class="math-square"
+                contenteditable="true"
+            >□</span>
+        `);
 
-}
+    });
 
-$("undoBtn").onclick = undo;
-$("toolbarUndo").onclick = undo;
+/* EQUATION */
 
-$("redoBtn").onclick = redo;
-$("toolbarRedo").onclick = redo;
+document.getElementById("equationBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
 
+document.getElementById("equationBtn")
+    .addEventListener("click",()=>{
 
-/* =========================================================
-   LINK
-   ========================================================= */
+        document.getElementById("equationInput").value = "";
 
-$("linkBtn").addEventListener(
-    "click",
-    ()=>{
+        document.getElementById("equationModal")
+            .classList.add("open");
 
-        const url =
-            prompt(
-                "Enter the website address:"
-            );
+        setTimeout(()=>{
+            document.getElementById("equationInput").focus();
+        },50);
 
-        if(!url)
-            return;
+    });
 
-        if(!restoreSelection())
-            return;
+document.getElementById("equationCancel")
+    .addEventListener("click",()=>{
+        document.getElementById("equationModal")
+            .classList.remove("open");
+    });
 
-        document.execCommand(
-            "createLink",
-            false,
-            url
+document.getElementById("equationInsert")
+    .addEventListener("click",()=>{
+
+        const value =
+            document.getElementById("equationInput")
+                .value.trim();
+
+        if(!value) return;
+
+        insertHTMLAtSelection(`
+            <div class="math-equation">
+                ${escapeHTML(value)}
+            </div>
+        `);
+
+        document.getElementById("equationModal")
+            .classList.remove("open");
+
+    });
+
+/* LINE */
+
+document.getElementById("lineBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
+
+document.getElementById("lineBtn")
+    .addEventListener("click",()=>{
+
+        insertHTMLAtSelection(`
+            <hr class="document-rule">
+        `);
+
+    });
+
+/* CALLOUT */
+
+document.getElementById("calloutBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
+
+document.getElementById("calloutBtn")
+    .addEventListener("click",()=>{
+
+        insertHTMLAtSelection(`
+            <div class="callout">
+                <strong>Callout</strong>
+                <br>
+                Add important information here.
+            </div>
+        `);
+
+    });
+
+/* TABLE */
+
+document.getElementById("tableBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
+
+document.getElementById("tableBtn")
+    .addEventListener("click",()=>{
+
+        const rows = parseInt(
+            prompt("Number of rows:", "3")
         );
 
-        autoSave();
+        const cols = parseInt(
+            prompt("Number of columns:", "3")
+        );
 
-    }
-);
+        if(!rows || !cols) return;
 
-
-/* =========================================================
-   IMAGE URL
-   ========================================================= */
-
-$("imageBtn").addEventListener(
-    "click",
-    ()=>{
-
-        const url =
-            prompt(
-                "Enter an image URL:"
-            );
-
-        if(!url)
-            return;
-
-        if(!restoreSelection())
-            return;
-
-        const img =
-            document.createElement("img");
-
-        img.src = url;
-
-        img.alt =
-            "Document image";
-
-        const selection =
-            window.getSelection();
-
-        if(selection.rangeCount){
-
-            const range =
-                selection.getRangeAt(0);
-
-            range.insertNode(img);
-
-        }
-
-        autoSave();
-
-    }
-);
-
-
-/* =========================================================
-   TABLE
-   ========================================================= */
-
-$("tableBtn").addEventListener(
-    "click",
-    ()=>{
-
-        let rows =
-            parseInt(
-                prompt(
-                    "Number of rows:",
-                    "3"
-                )
-            );
-
-        let cols =
-            parseInt(
-                prompt(
-                    "Number of columns:",
-                    "3"
-                )
-            );
-
-        if(
-            !rows ||
-            !cols ||
-            rows < 1 ||
-            cols < 1 ||
-            rows > 20 ||
-            cols > 20
-        ){
-
-            return;
-
-        }
-
-        let html =
-            "<table><tbody>";
+        let html = "<table><tbody>";
 
         for(let r=0;r<rows;r++){
 
             html += "<tr>";
 
             for(let c=0;c<cols;c++){
-
-                html +=
-                    r === 0
-                        ? "<th>Heading</th>"
-                        : "<td>Cell</td>";
-
+                html += "<td><br></td>";
             }
 
             html += "</tr>";
-
         }
 
-        html +=
-            "</tbody></table>";
+        html += "</tbody></table>";
 
         insertHTMLAtSelection(html);
 
-    }
-);
+    });
 
+/* LINK */
 
-/* =========================================================
-   INSERT HTML
-   ========================================================= */
+document.getElementById("linkBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
 
-function insertHTMLAtSelection(html){
+document.getElementById("linkBtn")
+    .addEventListener("click",()=>{
 
-    editor.focus();
+        ensureSelection();
 
-    if(!restoreSelection())
-        return;
-
-    const selection =
-        window.getSelection();
-
-    if(!selection.rangeCount)
-        return;
-
-    const range =
-        selection.getRangeAt(0);
-
-    const temp =
-        document.createElement("div");
-
-    temp.innerHTML = html;
-
-    const fragment =
-        document.createDocumentFragment();
-
-    while(temp.firstChild){
-
-        fragment.appendChild(
-            temp.firstChild
+        const url = prompt(
+            "Enter the website address:",
+            "https://"
         );
 
-    }
-
-    range.deleteContents();
-
-    range.insertNode(fragment);
-
-    selection.removeAllRanges();
-
-    autoSave();
-
-}
-
-
-/* =========================================================
-   HORIZONTAL LINE
-   ========================================================= */
-
-$("lineBtn").addEventListener(
-    "click",
-    ()=>{
-
-        insertHTMLAtSelection(
-            "<hr>"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   PAGE BREAK
-   ========================================================= */
-
-$("pageBreakBtn").addEventListener(
-    "click",
-    ()=>{
-
-        insertHTMLAtSelection(
-            `
-            <div
-                style="
-                    page-break-after:always;
-                    break-after:page;
-                    height:1px;
-                "
-            ></div>
-            `
-        );
-
-        showToast(
-            "Page break inserted"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   CALLOUT
-   ========================================================= */
-
-$("calloutBtn").addEventListener(
-    "click",
-    ()=>{
-
-        insertHTMLAtSelection(
-            `
-            <div class="callout">
-                <strong>Important</strong>
-                <br>
-                Type your note here.
-            </div>
-            `
-        );
-
-    }
-);
-
-
-/* =========================================================
-   MATHS SQUARE
-   ========================================================= */
-
-$("mathSquareBtn").addEventListener(
-    "click",
-    ()=>{
-
-        insertHTMLAtSelection(
-            `
-            <span
-                class="math-square"
-                contenteditable="true"
-            >□</span>
-            `
-        );
-
-        showToast(
-            "Maths square inserted"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   EQUATION
-   ========================================================= */
-
-$("equationBtn").addEventListener(
-    "click",
-    ()=>{
-
-        $("equationModal")
-            .classList.add("show");
-
-        $("equationInput")
-            .focus();
-
-    }
-);
-
-function closeEquation(){
-
-    $("equationModal")
-        .classList.remove("show");
-
-}
-
-$("closeEquation").onclick =
-    closeEquation;
-
-$("cancelEquation").onclick =
-    closeEquation;
-
-
-$("insertEquation").onclick =
-    ()=>{
-
-        const value =
-            $("equationInput")
-                .value
-                .trim();
-
-        if(!value)
-            return;
-
-        insertHTMLAtSelection(
-            `
-            <div
-                class="math-equation"
-                contenteditable="true"
-            >
-                ${escapeHTML(value)}
-            </div>
-            `
-        );
-
-        $("equationInput").value = "";
-
-        closeEquation();
-
-    };
-
-
-/* =========================================================
-   FIND / REPLACE
-   ========================================================= */
-
-$("findBtn").onclick =
-    ()=>{
-        $("findModal")
-            .classList.add("show");
-
-        $("findInput").focus();
-    };
-
-
-$("closeFind").onclick =
-    ()=>{
-        $("findModal")
-            .classList.remove("show");
-    };
-
-
-$("findNext").onclick =
-    ()=>{
-
-        const query =
-            $("findInput").value;
-
-        if(!query)
-            return;
-
-        const selection =
-            window.getSelection();
-
-        const range =
-            document.createRange();
-
-        const walker =
-            document.createTreeWalker(
-                editor,
-                NodeFilter.SHOW_TEXT
-            );
-
-        let node;
-
-        while(node = walker.nextNode()){
-
-            const index =
-                node.textContent
-                    .toLowerCase()
-                    .indexOf(
-                        query.toLowerCase()
-                    );
-
-            if(index !== -1){
-
-                range.setStart(
-                    node,
-                    index
-                );
-
-                range.setEnd(
-                    node,
-                    index + query.length
-                );
-
-                selection.removeAllRanges();
-
-                selection.addRange(range);
-
-                savedRange =
-                    range.cloneRange();
-
-                return;
-
-            }
-
+        if(url){
+            command("createLink",url);
         }
 
-        showToast("No results found");
+    });
 
-    };
+/* IMAGE */
 
+document.getElementById("imageBtn")
+    .addEventListener("mousedown",event=>{
+        event.preventDefault();
+        saveSelection();
+    });
 
-$("replaceOne").onclick =
-    ()=>{
+document.getElementById("imageBtn")
+    .addEventListener("click",()=>{
+        document.getElementById("imageInput").click();
+    });
 
-        if(!restoreSelection())
-            return;
+document.getElementById("imageInput")
+    .addEventListener("change",function(){
 
-        const replacement =
-            $("replaceInput").value;
+        [...this.files].forEach(file=>{
 
-        const selection =
-            window.getSelection();
+            const reader = new FileReader();
 
-        if(
-            selection.rangeCount &&
-            !selection.isCollapsed
-        ){
+            reader.onload = event=>{
 
-            document.execCommand(
-                "insertText",
-                false,
-                replacement
-            );
+                insertHTMLAtSelection(`
+                    <img
+                        src="${event.target.result}"
+                        alt="${escapeHTML(file.name)}"
+                    >
+                `);
 
-            autoSave();
+            };
 
-        }
-
-    };
-
-
-$("replaceAll").onclick =
-    ()=>{
-
-        const find =
-            $("findInput").value;
-
-        const replace =
-            $("replaceInput").value;
-
-        if(!find)
-            return;
-
-        const walker =
-            document.createTreeWalker(
-                editor,
-                NodeFilter.SHOW_TEXT
-            );
-
-        const nodes = [];
-
-        let node;
-
-        while(node = walker.nextNode()){
-            nodes.push(node);
-        }
-
-        nodes.forEach(node=>{
-
-            node.textContent =
-                node.textContent.split(find).join(replace);
+            reader.readAsDataURL(file);
 
         });
 
-        autoSave();
-
-        showToast(
-            "All matches replaced"
-        );
-
-    };
-
-
-/* =========================================================
-   FILE UPLOADS
-   ========================================================= */
-
-$("uploadBtn").onclick =
-    ()=>{
-        $("fileInput").click();
-    };
-
-
-$("fileInput").addEventListener(
-    "change",
-    async function(){
-
-        const files =
-            Array.from(this.files);
-
-        for(const file of files){
-
-            await importFile(file);
-
-        }
-
         this.value = "";
+    });
 
-    }
-);
+/* FILE */
 
+document.getElementById("fileBtn")
+    .addEventListener("click",()=>{
+        document.getElementById("fileInput").click();
+    });
 
-async function importFile(file){
+document.getElementById("fileInput")
+    .addEventListener("change",function(){
 
-    if(file.type.startsWith("image/")){
+        const file = this.files[0];
 
-        const reader =
-            new FileReader();
+        if(!file) return;
 
-        reader.onload = ()=>{
+        const reader = new FileReader();
 
-            insertHTMLAtSelection(
-                `
-                <img
-                    src="${reader.result}"
-                    alt="${escapeHTML(file.name)}"
-                >
-                `
-            );
+        reader.onload = event=>{
 
-            showToast(
-                file.name +
-                " inserted"
-            );
+            let text = event.target.result;
+
+            if(
+                file.name.endsWith(".html") ||
+                file.name.endsWith(".htm")
+            ){
+                insertHTMLAtSelection(text);
+            }else{
+                insertHTMLAtSelection(
+                    `<pre>${escapeHTML(text)}</pre>`
+                );
+            }
 
         };
 
-        reader.readAsDataURL(file);
+        reader.readAsText(file);
 
-        return;
+        this.value = "";
+    });
 
-    }
+/* =========================================================
+   PAGE BREAK / NEW PAGE
+   ========================================================= */
 
+document.getElementById("newPageBtn")
+    .addEventListener("click",()=>{
 
-    const text =
-        await file.text();
+        createPage(activePageId,true);
 
-    let html = "";
+    });
 
-    if(
-        file.name.endsWith(".html") ||
-        file.name.endsWith(".htm")
-    ){
+document.getElementById("pageBreakBtn")
+    .addEventListener("click",()=>{
 
-        const parser =
-            new DOMParser();
+        createPage(activePageId,true);
 
-        const parsed =
-            parser.parseFromString(
-                text,
-                "text/html"
-            );
-
-        parsed
-            .querySelectorAll(
-                "script,style,iframe,object,embed"
-            )
-            .forEach(el=>el.remove());
-
-        parsed
-            .querySelectorAll("*")
-            .forEach(el=>{
-
-                [...el.attributes]
-                    .forEach(attr=>{
-
-                        if(
-                            attr.name
-                                .toLowerCase()
-                                .startsWith("on")
-                        ){
-
-                            el.removeAttribute(
-                                attr.name
-                            );
-
-                        }
-
-                    });
-
-            });
-
-        html =
-            parsed.body
-                ? parsed.body.innerHTML
-                : escapeHTML(text);
-
-    }else{
-
-        html =
-            text
-                .split(/\r?\n/)
-                .map(line =>
-                    `<p>${escapeHTML(line) || "&nbsp;"}</p>`
-                )
-                .join("");
-
-    }
-
-    insertHTMLAtSelection(html);
-
-    showToast(
-        file.name +
-        " imported"
-    );
-
-}
-
+    });
 
 /* =========================================================
    SETTINGS
    ========================================================= */
 
-$("settingsBtn").onclick =
-    ()=>{
-        $("sidePanel")
-            .classList.add("open");
-    };
+function applySettings(){
 
+    const s = documentData.settings;
 
-$("closeSettings").onclick =
-    ()=>{
-        $("sidePanel")
-            .classList.remove("open");
-    };
+    document.getElementById("ruledToggle").checked =
+        !!s.ruled;
 
+    document.getElementById("marginToggle").checked =
+        !!s.margin;
+
+    document.getElementById("gridToggle").checked =
+        !!s.grid;
+
+    document.getElementById("newspaperToggle").checked =
+        !!s.newspaper;
+
+    document.getElementById("darkToggle").checked =
+        !!s.dark;
+
+    document.getElementById("focusToggle").checked =
+        !!s.focus;
+
+    document.getElementById("headerToggle").checked =
+        s.header !== false;
+
+    document.getElementById("footerToggle").checked =
+        s.footer !== false;
+
+    document.getElementById("paperSize").value =
+        s.paper || "A4";
+
+    document.body.classList.toggle(
+        "dark",
+        !!s.dark
+    );
+
+    document.body.classList.toggle(
+        "focus",
+        !!s.focus
+    );
+}
 
 [
-    "ruledSwitch",
-    "marginSwitch",
-    "gridSwitch",
-    "largeGridSwitch",
-    "newspaperSwitch",
-    "darkSwitch",
-    "focusSwitch",
-    "headerSwitch",
-    "footerSwitch"
+    "ruledToggle",
+    "marginToggle",
+    "gridToggle",
+    "newspaperToggle",
+    "darkToggle",
+    "focusToggle",
+    "headerToggle",
+    "footerToggle",
+    "paperSize"
 ].forEach(id=>{
 
-    $(id).addEventListener(
-        "change",
-        updatePageModes
-    );
+    document.getElementById(id)
+        .addEventListener("change",()=>{
+
+            collectPages();
+
+            documentData.settings.ruled =
+                document.getElementById("ruledToggle").checked;
+
+            documentData.settings.margin =
+                document.getElementById("marginToggle").checked;
+
+            documentData.settings.grid =
+                document.getElementById("gridToggle").checked;
+
+            documentData.settings.newspaper =
+                document.getElementById("newspaperToggle").checked;
+
+            documentData.settings.dark =
+                document.getElementById("darkToggle").checked;
+
+            documentData.settings.focus =
+                document.getElementById("focusToggle").checked;
+
+            documentData.settings.header =
+                document.getElementById("headerToggle").checked;
+
+            documentData.settings.footer =
+                document.getElementById("footerToggle").checked;
+
+            documentData.settings.paper =
+                document.getElementById("paperSize").value;
+
+            applyPaperSize();
+
+            renderPages(activePageId);
+
+            saveDocument();
+
+        });
 
 });
 
+function applyPaperSize(){
+
+    const size =
+        document.getElementById("paperSize").value;
+
+    let width = "794px";
+    let minHeight = "1123px";
+
+    if(size === "A5"){
+        width = "559px";
+        minHeight = "794px";
+    }
+
+    if(size === "letter"){
+        width = "816px";
+        minHeight = "1056px";
+    }
+
+    if(size === "legal"){
+        width = "816px";
+        minHeight = "1344px";
+    }
+
+    document.querySelectorAll(".page")
+        .forEach(page=>{
+            page.style.width = width;
+            page.style.minHeight = minHeight;
+        });
+}
+
+/* =========================================================
+   SETTINGS PANEL
+   ========================================================= */
+
+document.getElementById("settingsBtn")
+    .addEventListener("click",()=>{
+        document.getElementById("sidePanel")
+            .classList.toggle("open");
+    });
+
+document.getElementById("closeSettings")
+    .addEventListener("click",()=>{
+        document.getElementById("sidePanel")
+            .classList.remove("open");
+    });
+
+/* PAGE ACTIONS */
+
+document.getElementById("duplicatePageBtn")
+    .addEventListener("click",()=>{
+        duplicatePage(activePageId);
+    });
+
+document.getElementById("deletePageBtn")
+    .addEventListener("click",()=>{
+        deletePage(activePageId);
+    });
+
+document.getElementById("clearFormattingBtn")
+    .addEventListener("click",()=>{
+        command("removeFormat");
+    });
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+let saveTimer = null;
+
+function debounceSave(){
+
+    clearTimeout(saveTimer);
+
+    saveTimer = setTimeout(()=>{
+        saveDocument();
+    },700);
+}
+
+document.getElementById("saveBtn")
+    .addEventListener("click",saveDocument);
+
+document.getElementById("documentTitle")
+    .addEventListener("input",debounceSave);
+
+/* =========================================================
+   UNDO / REDO
+   ========================================================= */
+
+document.getElementById("undoBtn")
+    .addEventListener("click",()=>{
+        command("undo");
+    });
+
+document.getElementById("redoBtn")
+    .addEventListener("click",()=>{
+        command("redo");
+    });
+
+/* =========================================================
+   FIND / REPLACE
+   ========================================================= */
+
+document.getElementById("findBtn")
+    .addEventListener("click",()=>{
+
+        document.getElementById("findModal")
+            .classList.add("open");
+
+        document.getElementById("findInput").focus();
+
+    });
+
+document.getElementById("findCancel")
+    .addEventListener("click",()=>{
+        document.getElementById("findModal")
+            .classList.remove("open");
+    });
+
+document.getElementById("findNext")
+    .addEventListener("click",()=>{
+
+        const value =
+            document.getElementById("findInput").value;
+
+        if(!value) return;
+
+        window.find(value);
+
+    });
+
+document.getElementById("replaceAll")
+    .addEventListener("click",()=>{
+
+        const find =
+            document.getElementById("findInput").value;
+
+        const replace =
+            document.getElementById("replaceInput").value;
+
+        if(!find) return;
+
+        document.querySelectorAll(".document-content")
+            .forEach(editor=>{
+
+                editor.innerHTML =
+                    editor.innerHTML.split(find).join(
+                        escapeHTML(replace)
+                    );
+
+            });
+
+        saveDocument();
+
+    });
 
 /* =========================================================
    ZOOM
    ========================================================= */
 
-function updateZoom(){
+function applyZoom(){
 
-    document.documentElement
-        .style
-        .setProperty(
-            "--zoom",
-            zoom
-        );
+    document.documentElement.style.setProperty(
+        "--zoom",
+        zoomLevel
+    );
 
-    $("zoomLabel").textContent =
-        Math.round(zoom * 100) +
-        "%";
+    document.querySelectorAll(".page")
+        .forEach(page=>{
+            page.style.transform =
+                `scale(${zoomLevel})`;
+            page.style.marginBottom =
+                `${1123 * (zoomLevel - 1)}px`;
+        });
 
+    document.getElementById("zoomLabel").textContent =
+        Math.round(zoomLevel * 100) + "%";
 }
 
+document.getElementById("zoomIn")
+    .addEventListener("click",()=>{
 
-$("zoomInBtn").onclick =
-    ()=>{
+        zoomLevel = Math.min(
+            1.5,
+            +(zoomLevel + .1).toFixed(2)
+        );
 
-        zoom =
-            Math.min(
-                1.8,
-                zoom + .1
-            );
+        applyZoom();
 
-        updateZoom();
+    });
 
-    };
+document.getElementById("zoomOut")
+    .addEventListener("click",()=>{
 
+        zoomLevel = Math.max(
+            .5,
+            +(zoomLevel - .1).toFixed(2)
+        );
 
-$("zoomOutBtn").onclick =
-    ()=>{
+        applyZoom();
 
-        zoom =
-            Math.max(
-                .5,
-                zoom - .1
-            );
-
-        updateZoom();
-
-    };
-
-
-$("zoomLabel").onclick =
-    ()=>{
-
-        zoom = 1;
-
-        updateZoom();
-
-    };
-
+    });
 
 /* =========================================================
-   FULLSCREEN EDITOR
+   FULLSCREEN
    ========================================================= */
 
-$("fullscreenBtn").onclick =
-    async ()=>{
+document.getElementById("fullscreenBtn")
+    .addEventListener("click",async()=>{
 
         try{
 
             if(!document.fullscreenElement){
-
-                await document.documentElement
-                    .requestFullscreen();
-
+                await document.documentElement.requestFullscreen();
             }else{
-
                 await document.exitFullscreen();
-
             }
 
-        }catch(error){
+        }catch(e){}
 
-            console.log(error);
-
-        }
-
-    };
-
+    });
 
 /* =========================================================
-   PRESENTATION MODE
+   PRINT
    ========================================================= */
 
-const presentation =
-    $("presentation");
+document.getElementById("printBtn")
+    .addEventListener("click",()=>{
 
-const presentationPage =
-    $("presentationPage");
+        collectPages();
+        window.print();
 
-const presentationContent =
-    $("presentationContent");
+    });
+
+/* =========================================================
+   PRESENTATION
+   ========================================================= */
 
 function startPresentation(){
 
-    presentationContent.innerHTML =
-        editor.innerHTML;
+    collectPages();
+
+    if(!documentData.pages.length) return;
+
+    presentationIndex = 0;
+
+    document.getElementById("presentation")
+        .classList.add("open");
+
+    showPresentationPage();
+
+}
+
+function showPresentationPage(){
+
+    const page =
+        documentData.pages[presentationIndex];
+
+    if(!page) return;
+
+    const presentationPage =
+        document.getElementById("presentationPage");
+
+    document.getElementById("presentationContent")
+        .innerHTML = page.content;
+
+    document.getElementById("presentationCounter")
+        .textContent =
+        `${presentationIndex + 1} / ${documentData.pages.length}`;
+
+    document.getElementById("presentationTitle")
+        .textContent =
+        documentData.title;
 
     presentationPage.className =
         "presentation-page";
 
-    if(
-        $("ruledSwitch").checked
-    ){
+    if(documentData.settings.ruled)
+        presentationPage.classList.add("ruled");
 
-        presentationPage.classList.add(
-            "ruled"
-        );
+    if(documentData.settings.margin)
+        presentationPage.classList.add("margin-line");
 
-    }
+    if(documentData.settings.grid)
+        presentationPage.classList.add("math-grid");
 
-    if(
-        $("gridSwitch").checked
-    ){
+    if(documentData.settings.newspaper)
+        presentationPage.classList.add("newspaper");
 
-        presentationPage.classList.add(
-            "math-grid"
-        );
+    requestAnimationFrame(resizeAnnotationCanvas);
 
-    }
-
-    if(
-        $("newspaperSwitch").checked
-    ){
-
-        presentationPage.classList.add(
-            "newspaper"
-        );
-
-    }
-
-    if(
-        $("darkSwitch").checked
-    ){
-
-        presentationPage.classList.add(
-            "dark"
-        );
-
-    }
-
-    $("presentationTitle")
-        .textContent =
-        documentTitle.value ||
-        "Untitled document";
-
-    presentation.classList.add(
-        "show"
-    );
-
-    clearAnnotations();
-
-    resizeAnnotationCanvas();
-
-    showToast(
-        "Presentation mode"
-    );
-
+    drawAnnotations();
 }
 
+document.getElementById("presentBtn")
+    .addEventListener("click",startPresentation);
 
-function exitPresentation(){
+document.getElementById("presentationClose")
+    .addEventListener("click",()=>{
 
-    presentation.classList.remove(
-        "show"
-    );
+        document.getElementById("presentation")
+            .classList.remove("open");
 
-    presentation.classList.remove(
-        "annotating"
-    );
+    });
 
-    annotationMode =
-        "pen";
+document.getElementById("presentationPrev")
+    .addEventListener("click",()=>{
 
-    updateAnnotationButtons();
+        if(presentationIndex > 0){
 
-}
+            saveCurrentAnnotation();
 
+            presentationIndex--;
 
-$("presentBtn").onclick =
-    startPresentation;
+            showPresentationPage();
 
-$("exitPresentation").onclick =
-    exitPresentation;
+        }
 
+    });
 
-/* =========================================================
-   PRESENTATION FULLSCREEN
-   ========================================================= */
+document.getElementById("presentationNext")
+    .addEventListener("click",()=>{
 
-$("presentationFullscreen").onclick =
-    async ()=>{
+        if(
+            presentationIndex <
+            documentData.pages.length - 1
+        ){
+
+            saveCurrentAnnotation();
+
+            presentationIndex++;
+
+            showPresentationPage();
+
+        }
+
+    });
+
+/* PRESENTATION FULLSCREEN */
+
+document.getElementById("presentationFullscreen")
+    .addEventListener("click",async()=>{
+
+        const el =
+            document.getElementById("presentation");
 
         try{
 
             if(!document.fullscreenElement){
-
-                await presentation
-                    .requestFullscreen();
-
+                await el.requestFullscreen();
             }else{
-
                 await document.exitFullscreen();
-
             }
 
-        }catch(error){
+        }catch(e){}
 
-            console.log(error);
-
-        }
-
-    };
-
+    });
 
 /* =========================================================
-   PRESENTATION NAVIGATION
+   ANNOTATION DRAWING
    ========================================================= */
 
-$("prevPresentation").onclick =
-    ()=>{
-        presentationPage.scrollBy({
-            top:-window.innerHeight * .75,
-            behavior:"smooth"
-        });
-    };
+const canvas =
+    document.getElementById("annotationCanvas");
 
-
-$("nextPresentation").onclick =
-    ()=>{
-        presentationPage.scrollBy({
-            top:window.innerHeight * .75,
-            behavior:"smooth"
-        });
-    };
-
-
-/* =========================================================
-   ANNOTATION SYSTEM
-   ========================================================= */
-
-const annotationCanvas =
-    $("annotationCanvas");
-
-const annotationContext =
-    annotationCanvas.getContext(
-        "2d"
-    );
-
-let drawing = false;
-let annotationMode = "pen";
-
-let annotationColor =
-    "#ff3b30";
-
-let annotationSize = 5;
-
+const ctx = canvas.getContext("2d");
 
 function resizeAnnotationCanvas(){
 
-    const oldCanvas =
-        document.createElement("canvas");
-
-    oldCanvas.width =
-        annotationCanvas.width;
-
-    oldCanvas.height =
-        annotationCanvas.height;
-
-    if(
-        oldCanvas.width &&
-        oldCanvas.height
-    ){
-
-        oldCanvas
-            .getContext("2d")
-            .drawImage(
-                annotationCanvas,
-                0,
-                0
-            );
-
-    }
+    const page =
+        document.getElementById("presentationPage");
 
     const rect =
-        presentation
-            .getBoundingClientRect();
+        page.getBoundingClientRect();
 
     const dpr =
         window.devicePixelRatio || 1;
 
-    annotationCanvas.width =
-        rect.width * dpr;
+    canvas.width =
+        Math.max(1,Math.round(rect.width*dpr));
 
-    annotationCanvas.height =
-        rect.height * dpr;
+    canvas.height =
+        Math.max(1,Math.round(rect.height*dpr));
 
-    annotationCanvas.style.width =
+    canvas.style.width =
         rect.width + "px";
 
-    annotationCanvas.style.height =
+    canvas.style.height =
         rect.height + "px";
 
-    annotationContext.setTransform(
+    ctx.setTransform(
         dpr,
         0,
         0,
@@ -3584,539 +3037,391 @@ function resizeAnnotationCanvas(){
         0
     );
 
+    drawAnnotations();
 }
 
+function getCanvasPoint(event){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    return {
+        x:event.clientX - rect.left,
+        y:event.clientY - rect.top
+    };
+}
+
+function getCurrentAnnotationList(){
+
+    const page =
+        documentData.pages[presentationIndex];
+
+    if(!page) return [];
+
+    if(!annotationStrokes[page.id]){
+        annotationStrokes[page.id] = [];
+    }
+
+    return annotationStrokes[page.id];
+}
+
+function startDrawing(event){
+
+    if(
+        !document.getElementById("presentation")
+            .classList.contains("annotating")
+    ) return;
+
+    event.preventDefault();
+
+    drawing = true;
+
+    const point =
+        getCanvasPoint(event);
+
+    currentStroke = {
+        mode:annotationMode,
+        color:document.getElementById(
+            "annotationColor"
+        ).value,
+        size:parseInt(
+            document.getElementById(
+                "annotationSize"
+            ).value
+        ),
+        points:[point]
+    };
+
+    canvas.setPointerCapture?.(event.pointerId);
+
+    drawAnnotations();
+
+}
+
+function drawMove(event){
+
+    if(!drawing || !currentStroke) return;
+
+    event.preventDefault();
+
+    currentStroke.points.push(
+        getCanvasPoint(event)
+    );
+
+    drawAnnotations();
+}
+
+function finishDrawing(event){
+
+    if(!drawing || !currentStroke) return;
+
+    drawing = false;
+
+    const list =
+        getCurrentAnnotationList();
+
+    if(currentStroke.points.length > 1){
+        list.push(currentStroke);
+    }
+
+    currentStroke = null;
+
+    drawAnnotations();
+}
+
+canvas.addEventListener(
+    "pointerdown",
+    startDrawing
+);
+
+canvas.addEventListener(
+    "pointermove",
+    drawMove
+);
+
+canvas.addEventListener(
+    "pointerup",
+    finishDrawing
+);
+
+canvas.addEventListener(
+    "pointercancel",
+    finishDrawing
+);
+
+function drawStroke(stroke){
+
+    if(!stroke || !stroke.points.length) return;
+
+    const points = stroke.points;
+
+    ctx.save();
+
+    if(stroke.mode === "eraser"){
+        ctx.globalCompositeOperation =
+            "destination-out";
+    }else{
+        ctx.globalCompositeOperation =
+            "source-over";
+    }
+
+    ctx.strokeStyle =
+        stroke.color;
+
+    ctx.lineWidth =
+        stroke.mode === "highlighter"
+            ? stroke.size * 3
+            : stroke.size;
+
+    ctx.globalAlpha =
+        stroke.mode === "highlighter"
+            ? .32
+            : 1;
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        points[0].x,
+        points[0].y
+    );
+
+    for(let i=1;i<points.length;i++){
+
+        ctx.lineTo(
+            points[i].x,
+            points[i].y
+        );
+
+    }
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function drawAnnotations(){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    ctx.clearRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+    );
+
+    const list =
+        getCurrentAnnotationList();
+
+    list.forEach(drawStroke);
+
+    if(currentStroke){
+        drawStroke(currentStroke);
+    }
+}
+
+function saveCurrentAnnotation(){
+    drawAnnotations();
+}
+
+document.getElementById("annotateBtn")
+    .addEventListener("click",()=>{
+
+        const presentation =
+            document.getElementById("presentation");
+
+        presentation.classList.toggle("annotating");
+
+    });
+
+document.getElementById("penBtn")
+    .addEventListener("click",()=>{
+
+        annotationMode = "pen";
+
+    });
+
+document.getElementById("highlighterBtn")
+    .addEventListener("click",()=>{
+
+        annotationMode = "highlighter";
+
+    });
+
+document.getElementById("eraserBtn")
+    .addEventListener("click",()=>{
+
+        annotationMode = "eraser";
+
+    });
+
+document.getElementById("clearAnnotations")
+    .addEventListener("click",()=>{
+
+        const page =
+            documentData.pages[presentationIndex];
+
+        if(page){
+            annotationStrokes[page.id] = [];
+        }
+
+        currentStroke = null;
+
+        drawAnnotations();
+
+    });
 
 window.addEventListener(
     "resize",
-    ()=>{
-        if(presentation.classList.contains("show")){
-            resizeAnnotationCanvas();
-        }
-    }
+    resizeAnnotationCanvas
 );
-
-
-function getPointerPosition(e){
-
-    const rect =
-        annotationCanvas
-            .getBoundingClientRect();
-
-    return {
-
-        x:
-            e.clientX -
-            rect.left,
-
-        y:
-            e.clientY -
-            rect.top
-
-    };
-
-}
-
-
-annotationCanvas.addEventListener(
-    "pointerdown",
-    e=>{
-
-        if(
-            !presentation.classList.contains(
-                "annotating"
-            )
-        )
-            return;
-
-        drawing = true;
-
-        annotationCanvas.setPointerCapture(
-            e.pointerId
-        );
-
-        const pos =
-            getPointerPosition(e);
-
-        annotationContext.beginPath();
-
-        annotationContext.moveTo(
-            pos.x,
-            pos.y
-        );
-
-    }
-);
-
-
-annotationCanvas.addEventListener(
-    "pointermove",
-    e=>{
-
-        if(!drawing)
-            return;
-
-        const pos =
-            getPointerPosition(e);
-
-        annotationContext.lineTo(
-            pos.x,
-            pos.y
-        );
-
-        annotationContext.lineWidth =
-            annotationSize;
-
-        annotationContext.lineCap =
-            "round";
-
-        annotationContext.lineJoin =
-            "round";
-
-        if(
-            annotationMode ===
-            "highlighter"
-        ){
-
-            annotationContext.globalAlpha =
-                .25;
-
-            annotationContext.globalCompositeOperation =
-                "multiply";
-
-            annotationContext.strokeStyle =
-                annotationColor;
-
-        }else if(
-            annotationMode ===
-            "eraser"
-        ){
-
-            annotationContext.globalAlpha =
-                1;
-
-            annotationContext.globalCompositeOperation =
-                "destination-out";
-
-            annotationContext.strokeStyle =
-                "rgba(0,0,0,1)";
-
-        }else{
-
-            annotationContext.globalAlpha =
-                1;
-
-            annotationContext.globalCompositeOperation =
-                "source-over";
-
-            annotationContext.strokeStyle =
-                annotationColor;
-
-        }
-
-        annotationContext.stroke();
-
-    }
-);
-
-
-annotationCanvas.addEventListener(
-    "pointerup",
-    ()=>{
-        drawing = false;
-        annotationContext.closePath();
-    }
-);
-
-
-annotationCanvas.addEventListener(
-    "pointercancel",
-    ()=>{
-        drawing = false;
-    }
-);
-
 
 /* =========================================================
-   ANNOTATION BUTTONS
+   KEYBOARD SHORTCUTS
    ========================================================= */
 
-function setAnnotationMode(mode){
+document.addEventListener("keydown",event=>{
 
-    annotationMode = mode;
+    const mod =
+        event.ctrlKey || event.metaKey;
 
-    presentation.classList.add(
-        "annotating"
-    );
+    if(mod && event.key.toLowerCase() === "s"){
 
-    updateAnnotationButtons();
+        event.preventDefault();
 
-}
-
-
-function updateAnnotationButtons(){
-
-    $("penTool")
-        .classList.toggle(
-            "active",
-            annotationMode === "pen"
-        );
-
-    $("highlighterTool")
-        .classList.toggle(
-            "active",
-            annotationMode === "highlighter"
-        );
-
-    $("eraserTool")
-        .classList.toggle(
-            "active",
-            annotationMode === "eraser"
-        );
-
-}
-
-
-$("penTool").onclick =
-    ()=>{
-        setAnnotationMode("pen");
-    };
-
-
-$("highlighterTool").onclick =
-    ()=>{
-        setAnnotationMode("highlighter");
-    };
-
-
-$("eraserTool").onclick =
-    ()=>{
-        setAnnotationMode("eraser");
-    };
-
-
-$("annotationColor").addEventListener(
-    "input",
-    function(){
-
-        annotationColor =
-            this.value;
-
-        setAnnotationMode(
-            annotationMode === "eraser"
-                ? "pen"
-                : annotationMode
-        );
+        saveDocument();
 
     }
-);
 
+    if(mod && event.key.toLowerCase() === "b"){
+        event.preventDefault();
+        command("bold");
+    }
 
-$("annotationSize").addEventListener(
-    "input",
-    function(){
+    if(mod && event.key.toLowerCase() === "i"){
+        event.preventDefault();
+        command("italic");
+    }
 
-        annotationSize =
-            Number(this.value);
+    if(mod && event.key.toLowerCase() === "u"){
+        event.preventDefault();
+        command("underline");
+    }
+
+    if(
+        mod &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "p"
+    ){
+
+        event.preventDefault();
+
+        createPage(activePageId,true);
 
     }
-);
 
+    if(
+        document.getElementById("presentation")
+            .classList.contains("open")
+    ){
 
-/* =========================================================
-   CLEAR ANNOTATIONS
-   ========================================================= */
-
-function clearAnnotations(){
-
-    annotationContext.clearRect(
-        0,
-        0,
-        annotationCanvas.width,
-        annotationCanvas.height
-    );
-
-}
-
-
-$("clearAnnotations").onclick =
-    ()=>{
-
-        if(
-            confirm(
-                "Clear all presentation annotations?"
-            )
-        ){
-
-            clearAnnotations();
-
+        if(event.key === "ArrowRight"){
+            document.getElementById(
+                "presentationNext"
+            ).click();
         }
 
-    };
-
-
-/* =========================================================
-   PRESENTATION KEYBOARD CONTROLS
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    e=>{
-
-        if(
-            presentation.classList.contains(
-                "show"
-            )
-        ){
-
-            if(e.key === "Escape"){
-
-                exitPresentation();
-
-                return;
-
-            }
-
-            if(e.key === "ArrowRight"){
-
-                presentationPage.scrollBy({
-                    top:window.innerHeight * .75,
-                    behavior:"smooth"
-                });
-
-            }
-
-            if(e.key === "ArrowLeft"){
-
-                presentationPage.scrollBy({
-                    top:-window.innerHeight * .75,
-                    behavior:"smooth"
-                });
-
-            }
-
-            return;
-
+        if(event.key === "ArrowLeft"){
+            document.getElementById(
+                "presentationPrev"
+            ).click();
         }
 
-
-        if(
-            (e.ctrlKey || e.metaKey) &&
-            e.key.toLowerCase() === "s"
-        ){
-
-            e.preventDefault();
-
-            saveDocument();
-
+        if(event.key === "Escape"){
+            document.getElementById(
+                "presentationClose"
+            ).click();
         }
 
     }
-);
 
-
-/* =========================================================
-   DOCUMENT TITLE
-   ========================================================= */
-
-documentTitle.addEventListener(
-    "input",
-    ()=>{
-
-        const heading =
-            editor.querySelector("h1");
-
-        if(
-            heading &&
-            heading.textContent ===
-            "Untitled document"
-        ){
-
-            heading.textContent =
-                documentTitle.value ||
-                "Untitled document";
-
-        }
-
-        $("presentationTitle")
-            .textContent =
-            documentTitle.value ||
-            "Untitled document";
-
-        autoSave();
-
-    }
-);
-
+});
 
 /* =========================================================
-   EDITOR INPUT
+   STATUS / COUNTS
    ========================================================= */
 
-editor.addEventListener(
-    "input",
-    ()=>{
+function updateStatus(){
 
-        updateCounts();
+    collectPages();
 
-        autoSave();
+    const totalText =
+        documentData.pages
+            .map(p=>{
 
-    }
-);
+                const temp =
+                    document.createElement("div");
 
+                temp.innerHTML = p.content;
 
-/* =========================================================
-   COUNTS
-   ========================================================= */
+                return temp.innerText;
 
-function updateCounts(){
-
-    const text =
-        editor.innerText
-            .replace(/\s+/g," ")
-            .trim();
+            })
+            .join(" ");
 
     const words =
-        text
-            ? text.split(" ").length
-            : 0;
+        totalText
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean)
+            .length;
 
     const chars =
-        text.length;
+        totalText.length;
 
-    $("wordCount").textContent =
-        words +
-        (
-            words === 1
-                ? " word"
-                : " words"
-        );
-
-    $("charCount").textContent =
-        chars +
-        (
-            chars === 1
-                ? " character"
-                : " characters"
-        );
-
-    const reading =
+    const minutes =
         Math.max(
             0,
             Math.ceil(words / 200)
         );
 
-    $("readingTime").textContent =
-        reading +
-        (
-            reading === 1
-                ? " min read"
-                : " min read"
+    const index =
+        documentData.pages.findIndex(
+            p=>p.id === activePageId
         );
 
+    document.getElementById("wordCount")
+        .textContent =
+        `${words} words`;
+
+    document.getElementById("charCount")
+        .textContent =
+        `${chars} characters`;
+
+    document.getElementById("readingTime")
+        .textContent =
+        `${minutes} min read`;
+
+    document.getElementById("pageStatus")
+        .textContent =
+        `Page ${Math.max(1,index+1)} of ${documentData.pages.length}`;
 }
 
-
 /* =========================================================
-   ACTIVE TOOLBAR STATES
-   ========================================================= */
-
-function updateToolbarStates(){
-
-    document
-        .querySelectorAll(
-            "[data-command]"
-        )
-        .forEach(button=>{
-
-            try{
-
-                button.classList.toggle(
-                    "active",
-                    document.queryCommandState(
-                        button.dataset.command
-                    )
-                );
-
-            }catch{}
-
-        });
-
-}
-
-
-document.addEventListener(
-    "selectionchange",
-    ()=>{
-
-        if(
-            document.activeElement ===
-            editor
-        ){
-
-            updateToolbarStates();
-
-            const selection =
-                window.getSelection();
-
-            if(
-                selection &&
-                selection.rangeCount
-            ){
-
-                const text =
-                    selection
-                        .toString()
-                        .trim();
-
-                $("selectionInfo").textContent =
-                    text
-                        ? text.length +
-                          " selected"
-                        : "";
-
-            }
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   SAVE BUTTON
-   ========================================================= */
-
-$("saveBtn").onclick =
-    ()=>{
-        saveDocument();
-        showToast("Document saved");
-    };
-
-
-/* =========================================================
-   LOAD
+   INIT
    ========================================================= */
 
 loadDocument();
+applyPaperSize();
+updateStatus();
 
-updateCounts();
-
-updateZoom();
-
-updateToolbarStates();
-
-
-/* =========================================================
-   STARTUP
-   ========================================================= */
-
-window.addEventListener(
-    "beforeunload",
-    ()=>{
-        saveDocument();
-    }
-);
+window.addEventListener("beforeunload",()=>{
+    saveDocument();
+});
 
 </script>
 
