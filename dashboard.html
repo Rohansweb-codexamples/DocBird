@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>DocBird Dashboard</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<aside class="sidebar">
+
+<div class="sidebar-logo">
+DocBird
+</div>
+
+<br>
+
+<button id="newDoc" class="btn btn-primary">
+<span class="material-symbols-outlined">
+add
+</span>
+New Document
+</button>
+
+</aside>
+
+<main class="main">
+
+<h1>My Documents</h1>
+
+<br>
+
+<div class="doc-grid" id="docs"></div>
+
+</main>
+
+</div>
+
+<script>
+
+const docsContainer =
+document.getElementById("docs");
+
+const docs =
+JSON.parse(
+localStorage.getItem("docbird_docs")
+|| "[]"
+);
+
+function render(){
+
+docsContainer.innerHTML="";
+
+docs.forEach(doc=>{
+
+const card =
+document.createElement("div");
+
+card.className="doc-card";
+
+card.innerHTML=`
+<h3>${doc.title}</h3>
+<p>${doc.date}</p>
+`;
+
+card.onclick=()=>{
+
+localStorage.setItem(
+"currentDoc",
+doc.id
+);
+
+location.href="editor.html";
+
+};
+
+docsContainer.appendChild(card);
+
+});
+
+}
+
+render();
+
+document.getElementById("newDoc")
+.onclick=()=>{
+
+const id=Date.now();
+
+docs.push({
+
+id,
+
+title:"Untitled Document",
+
+content:"",
+
+date:new Date().toLocaleString()
+
+});
+
+localStorage.setItem(
+"docbird_docs",
+JSON.stringify(docs)
+);
+
+localStorage.setItem(
+"currentDoc",
+id
+);
+
+location.href="editor.html";
+
+};
+
+</script>
+
+</body>
+</html>
