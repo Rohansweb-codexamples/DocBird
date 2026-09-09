@@ -6,37 +6,34 @@
 
 <title>DocBird Editor</title>
 
-<link rel="stylesheet" href="styles.css">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
 
 <style>
-
 /* =========================================================
    DOCBIRD EDITOR
-   Editor-specific styling
    ========================================================= */
 
 :root{
-    --orange:#ff8a00;
-    --orange2:#ffb300;
-    --yellow:#ffd54a;
+    --db-orange:#ff8a00;
+    --db-yellow:#ffd43b;
+    --db-red:#ff4b3e;
+    --db-pink:#ff5fa2;
+    --db-purple:#8d5cff;
 
-    --editor-bg:#eef1f5;
-    --paper:#ffffff;
-
-    --text:#202124;
-    --muted:#687078;
-
-    --line:#dfe3e8;
-
+    --editor-bg:#f2f4f8;
     --toolbar:#ffffff;
+    --paper:#ffffff;
+    --text:#202124;
+    --muted:#6b7280;
+    --border:#dfe3e8;
 
-    --page-width:850px;
-    --page-height:1100px;
+    --page-width:794px;
+    --page-min-height:1123px;
 
     --zoom:1;
 }
@@ -50,33 +47,30 @@ body{
     margin:0;
     width:100%;
     height:100%;
+    overflow:hidden;
+    font-family:Inter,Arial,sans-serif;
+    color:var(--text);
+    background:var(--editor-bg);
 }
 
-body{
-    font-family:Inter,Arial,sans-serif;
-    background:var(--editor-bg);
-    color:var(--text);
-    overflow:hidden;
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
 }
 
 /* =========================================================
-   MATERIAL ICONS
+   APP
    ========================================================= */
 
-.material-symbols-outlined{
-    font-family:'Material Symbols Outlined';
-    font-weight:normal;
-    font-style:normal;
-    font-size:22px;
-    line-height:1;
-    letter-spacing:normal;
-    text-transform:none;
-    display:inline-block;
-    white-space:nowrap;
-    word-wrap:normal;
-    direction:ltr;
-    -webkit-font-feature-settings:'liga';
-    -webkit-font-smoothing:antialiased;
+.docbird-app{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
 }
 
 /* =========================================================
@@ -84,658 +78,609 @@ body{
    ========================================================= */
 
 .topbar{
-    height:64px;
-    background:#fff;
-    border-bottom:1px solid #ddd;
+    height:66px;
+    flex-shrink:0;
     display:flex;
     align-items:center;
-    padding:0 14px;
-    gap:12px;
-    position:relative;
-    z-index:1000;
+    gap:14px;
+    padding:0 18px;
+    background:rgba(255,255,255,.96);
+    border-bottom:1px solid var(--border);
+    z-index:50;
 }
 
 .brand{
     display:flex;
     align-items:center;
     gap:10px;
-    min-width:170px;
+    min-width:150px;
 }
 
-.brand-mark{
+.brand-logo{
     width:40px;
     height:40px;
     border-radius:13px;
-
-    background:
-    linear-gradient(
-        135deg,
-        var(--orange),
-        var(--yellow)
-    );
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     color:white;
-
-    font-size:21px;
-    font-weight:900;
-
-    box-shadow:
-    0 5px 15px rgba(255,138,0,.25);
+    font-weight:800;
+    font-size:18px;
+    background:linear-gradient(
+        135deg,
+        var(--db-yellow),
+        var(--db-orange),
+        var(--db-red),
+        var(--db-pink)
+    );
+    box-shadow:0 7px 18px rgba(255,120,0,.25);
 }
 
 .brand-name{
-    font-size:20px;
+    font-size:18px;
     font-weight:800;
-    color:#333;
+    letter-spacing:-.4px;
 }
 
-.document-title{
-    border:0;
-    outline:0;
+.document-name{
+    flex:1;
+    min-width:100px;
+    max-width:500px;
+}
+
+.document-name input{
+    width:100%;
+    border:1px solid transparent;
     background:transparent;
+    padding:9px 12px;
+    border-radius:10px;
     font-size:17px;
     font-weight:600;
-    width:260px;
-    padding:9px 10px;
-    border-radius:9px;
+    outline:none;
 }
 
-.document-title:hover,
-.document-title:focus{
-    background:#f4f5f6;
+.document-name input:hover{
+    background:#f5f6f8;
+}
+
+.document-name input:focus{
+    background:#fff;
+    border-color:#ffae39;
+    box-shadow:0 0 0 3px rgba(255,138,0,.12);
 }
 
 .top-actions{
-    margin-left:auto;
     display:flex;
     align-items:center;
-    gap:7px;
+    gap:6px;
 }
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-
-.icon-button{
-    width:40px;
-    height:40px;
-
+.icon-btn{
+    width:42px;
+    height:42px;
     border:0;
-    border-radius:10px;
-
+    border-radius:11px;
     background:transparent;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
-    cursor:pointer;
-
-    color:#4d5358;
-
-    transition:
-        background .15s,
-        transform .15s;
+    color:#4b5563;
+    transition:.18s ease;
 }
 
-.icon-button:hover{
-    background:#f1f3f4;
+.icon-btn:hover{
+    background:#f0f2f5;
+    color:#111827;
 }
 
-.icon-button:active{
-    transform:scale(.94);
+.icon-btn.active{
+    background:#fff0d8;
+    color:#ef7d00;
 }
 
-.icon-button.active{
-    background:#fff0d7;
-    color:#e66f00;
-    box-shadow:
-        inset 0 0 0 2px #ff9d2e;
-}
-
-.primary-button{
-    border:0;
-
-    background:
-    linear-gradient(
-        135deg,
-        var(--orange),
-        var(--orange2)
-    );
-
-    color:white;
-
-    border-radius:12px;
-
-    padding:11px 18px;
-
-    font-weight:700;
-
-    display:flex;
-    align-items:center;
-    gap:8px;
-
-    cursor:pointer;
-
-    box-shadow:
-    0 5px 16px rgba(255,138,0,.25);
-}
-
-.primary-button:hover{
-    transform:translateY(-1px);
+.material-symbols-outlined{
+    font-size:21px;
 }
 
 /* =========================================================
    TOOLBAR
    ========================================================= */
 
+.toolbar-wrap{
+    flex-shrink:0;
+    background:white;
+    border-bottom:1px solid var(--border);
+    z-index:45;
+}
+
 .toolbar{
-    min-height:58px;
-
-    background:var(--toolbar);
-
-    border-bottom:1px solid #d9dde1;
-
+    min-height:54px;
     display:flex;
     align-items:center;
-
-    gap:4px;
-
-    padding:
-        8px
-        12px;
-
-    position:relative;
-
-    z-index:900;
-
+    gap:5px;
+    padding:6px 12px;
     overflow-x:auto;
+    scrollbar-width:thin;
 }
 
-.toolbar::-webkit-scrollbar{
-    height:6px;
-}
-
-.toolbar::-webkit-scrollbar-thumb{
-    background:#d0d4d8;
-    border-radius:10px;
-}
-
-.toolbar-group{
+.tool-group{
     display:flex;
     align-items:center;
     gap:3px;
-    padding-right:8px;
-    margin-right:4px;
-    border-right:1px solid #e0e3e6;
+    padding-right:7px;
+    margin-right:3px;
+    border-right:1px solid #e7e9ed;
 }
 
-.toolbar-group:last-child{
+.tool-group:last-child{
     border-right:0;
 }
 
-.tool{
-    min-width:38px;
-    height:38px;
-
+.tool-btn{
+    height:36px;
+    min-width:36px;
+    padding:0 8px;
     border:0;
     border-radius:8px;
-
     background:transparent;
-
+    color:#374151;
     display:flex;
     align-items:center;
     justify-content:center;
+    gap:5px;
+    transition:.15s;
+}
 
-    cursor:pointer;
+.tool-btn:hover{
+    background:#f1f3f5;
+}
 
-    color:#41464b;
+.tool-btn.active{
+    background:#ffe7c2;
+    color:#e56f00;
+}
 
+.tool-btn .material-symbols-outlined{
+    font-size:20px;
+}
+
+select.tool-select{
+    height:36px;
+    border:1px solid transparent;
+    border-radius:8px;
+    padding:0 8px;
+    background:transparent;
+    color:#374151;
+    outline:none;
+}
+
+select.tool-select:hover,
+select.tool-select:focus{
+    background:#f3f4f6;
+}
+
+.font-select{
+    width:145px;
+}
+
+.size-select{
+    width:80px;
+}
+
+.color-control{
     position:relative;
 }
 
-.tool:hover{
-    background:#f1f3f4;
+.color-control input{
+    position:absolute;
+    opacity:0;
+    width:0;
+    height:0;
 }
-
-.tool.active{
-    background:#ffe9c7;
-    color:#d96300;
-
-    box-shadow:
-        inset 0 0 0 2px #ff9d2e;
-}
-
-.tool .material-symbols-outlined{
-    font-size:21px;
-}
-
-/* =========================================================
-   SELECTS
-   ========================================================= */
-
-.select{
-    height:38px;
-
-    border:1px solid #d9dde2;
-
-    background:#fff;
-
-    border-radius:8px;
-
-    padding:0 9px;
-
-    font-family:inherit;
-    font-size:14px;
-
-    outline:none;
-
-    cursor:pointer;
-}
-
-.select:hover,
-.select:focus{
-    border-color:var(--orange);
-}
-
-/* =========================================================
-   COLOR PICKERS
-   ========================================================= */
 
 .color-button{
     width:38px;
-    height:38px;
-
+    height:36px;
     border:0;
-
-    background:transparent;
-
     border-radius:8px;
-
+    background:transparent;
     display:flex;
-    flex-direction:column;
-
     align-items:center;
     justify-content:center;
-
-    cursor:pointer;
 }
 
 .color-preview{
     width:20px;
-    height:4px;
-    border-radius:3px;
-    background:#202124;
-}
-
-.highlight-preview{
-    background:#fff36b;
+    height:20px;
+    border-radius:5px;
+    border:2px solid #fff;
+    box-shadow:0 0 0 1px #aaa;
 }
 
 /* =========================================================
-   EDITOR AREA
+   WORKSPACE
+   ========================================================= */
+
+.workspace{
+    flex:1;
+    min-height:0;
+    display:flex;
+    overflow:hidden;
+}
+
+.side-panel{
+    width:270px;
+    flex-shrink:0;
+    background:#fff;
+    border-right:1px solid var(--border);
+    overflow-y:auto;
+    display:none;
+}
+
+.side-panel.open{
+    display:block;
+}
+
+.panel-header{
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 17px;
+    border-bottom:1px solid #eceef1;
+}
+
+.panel-header strong{
+    font-size:15px;
+}
+
+.panel-content{
+    padding:15px;
+}
+
+.setting{
+    padding:11px 0;
+    border-bottom:1px solid #f0f1f3;
+}
+
+.setting label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    font-size:13px;
+    color:#374151;
+}
+
+.setting small{
+    display:block;
+    margin-top:5px;
+    color:#8a9099;
+    line-height:1.4;
+}
+
+.switch{
+    position:relative;
+    width:42px;
+    height:24px;
+    flex-shrink:0;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#d7dbe0;
+    border-radius:30px;
+    transition:.2s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:18px;
+    height:18px;
+    left:3px;
+    top:3px;
+    background:white;
+    border-radius:50%;
+    box-shadow:0 1px 3px rgba(0,0,0,.2);
+    transition:.2s;
+}
+
+.switch input:checked + .slider{
+    background:linear-gradient(135deg,#ffae19,#ff6f00);
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(18px);
+}
+
+/* =========================================================
+   CANVAS
    ========================================================= */
 
 .editor-area{
-    height:calc(100vh - 122px);
-
+    flex:1;
+    min-width:0;
     overflow:auto;
-
-    padding:
-        55px
-        30px
-        140px;
-
     position:relative;
+    padding:45px 35px 100px;
+    background:
+        radial-gradient(circle at 10% 10%,rgba(255,196,70,.12),transparent 25%),
+        radial-gradient(circle at 90% 20%,rgba(255,95,162,.08),transparent 25%),
+        #eef1f5;
 }
 
-/* =========================================================
-   PAGE WRAPPER
-   ========================================================= */
-
-.page-wrap{
-    width:calc(var(--page-width) * var(--zoom));
+.pages{
+    width:max-content;
     margin:0 auto;
-}
-
-/* =========================================================
-   DOCUMENT PAGE
-   ========================================================= */
-
-.document-page{
-
-    width:var(--page-width);
-
-    min-height:var(--page-height);
-
-    transform-origin:top left;
-
+    transform-origin:top center;
     transform:scale(var(--zoom));
+    transition:transform .12s ease;
+}
 
-    background:white;
-
-    margin:0 auto;
-
-    padding:
-        82px
-        82px
-        100px;
-
-    box-shadow:
-        0 5px 25px rgba(0,0,0,.15);
-
-    border-radius:3px;
-
-    outline:none;
-
-    font-family:Inter,Arial,sans-serif;
-
-    font-size:16px;
-
-    line-height:1.75;
-
-    color:#202124;
-
+.page{
     position:relative;
+    width:var(--page-width);
+    min-height:var(--page-min-height);
+    background:var(--paper);
+    margin-bottom:35px;
+    padding:80px 75px 85px;
+    box-shadow:
+        0 5px 12px rgba(0,0,0,.08),
+        0 20px 55px rgba(0,0,0,.09);
+    border-radius:2px;
+    overflow:hidden;
+}
+
+.page-header{
+    position:absolute;
+    left:75px;
+    right:75px;
+    top:30px;
+    min-height:25px;
+    color:#9aa0a6;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    border-bottom:1px solid #e9eaed;
+    padding-bottom:7px;
+}
+
+.page-footer{
+    position:absolute;
+    left:75px;
+    right:75px;
+    bottom:28px;
+    min-height:25px;
+    color:#9aa0a6;
+    font-size:10px;
+    border-top:1px solid #e9eaed;
+    padding-top:7px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.document-content{
+    position:relative;
+    min-height:950px;
+    outline:none;
+    font-size:16px;
+    line-height:1.65;
+    word-wrap:break-word;
+}
+
+.document-content:focus{
+    outline:none;
+}
+
+.document-content h1{
+    font-size:34px;
+    line-height:1.2;
+    margin:0 0 18px;
+    letter-spacing:-1px;
+}
+
+.document-content h2{
+    font-size:27px;
+    margin:25px 0 12px;
+}
+
+.document-content h3{
+    font-size:22px;
+    margin:22px 0 10px;
+}
+
+.document-content p{
+    margin:0 0 12px;
+}
+
+.document-content blockquote{
+    margin:20px 0;
+    padding:15px 20px;
+    border-left:5px solid #ff9d1a;
+    background:#fff7e9;
+    border-radius:0 10px 10px 0;
+}
+
+.document-content img{
+    max-width:100%;
+    height:auto;
+    display:block;
+    margin:16px auto;
+    border-radius:8px;
+}
+
+.document-content table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+}
+
+.document-content td,
+.document-content th{
+    border:1px solid #bfc4ca;
+    padding:9px;
+    min-width:55px;
+}
+
+.document-content th{
+    background:#f4f5f6;
+    font-weight:700;
 }
 
 /* =========================================================
-   NORMAL RULED PAPER
+   DOCUMENT MODES
    ========================================================= */
 
-.document-page.ruled{
-
+.page.ruled{
     background-color:#fff;
-
     background-image:
         repeating-linear-gradient(
             to bottom,
-
-            transparent 0px,
+            transparent 0,
             transparent 31px,
-
-            #c9dff5 31px,
-            #c9dff5 32px
+            rgba(90,140,220,.24) 32px,
+            transparent 33px
         );
-
-    background-position:
-        0 12px;
-
-    background-size:
-        100% 32px;
 }
 
-/* Make text sit nicely on ruled paper */
-
-.document-page.ruled{
-    line-height:32px;
+.page.ruled .document-content{
+    background:transparent;
 }
 
-/* =========================================================
-   LEFT RED MARGIN
-   ========================================================= */
-
-.document-page.ruled.margin-line::before{
-
+.page.ruled.margin-line:after{
     content:"";
-
     position:absolute;
-
     top:0;
     bottom:0;
-
-    left:78px;
-
+    left:125px;
     width:1px;
-
-    background:#f3a3a3;
-
+    background:rgba(230,80,80,.45);
     pointer-events:none;
 }
 
-/* =========================================================
-   MATHS GRID
-   ========================================================= */
-
-.document-page.math-grid{
-
+.page.math-grid{
     background-color:#fff;
-
     background-image:
-
-        linear-gradient(
-            #b9d4ee 1px,
-            transparent 1px
-        ),
-
-        linear-gradient(
-            90deg,
-            #b9d4ee 1px,
-            transparent 1px
-        );
-
-    background-size:
-        24px 24px;
-
-    background-position:
-        0 0;
+        linear-gradient(rgba(70,120,200,.19) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(70,120,200,.19) 1px,transparent 1px);
+    background-size:25px 25px;
 }
 
-/* Larger maths grid */
-
-.document-page.math-grid.large-grid{
-
-    background-image:
-
-        linear-gradient(
-            #8fb9df 1px,
-            transparent 1px
-        ),
-
-        linear-gradient(
-            90deg,
-            #8fb9df 1px,
-            transparent 1px
-        );
-
-    background-size:
-        48px 48px;
+.page.math-grid-large{
+    background-size:50px 50px;
 }
 
-/* =========================================================
-   NEWSPAPER MODE
-   ========================================================= */
-
-.document-page.newspaper{
-
-    font-family:
-        Merriweather,
-        Georgia,
-        serif;
-
-    line-height:1.55;
-}
-
-.document-page.newspaper .article-content{
-
+.page.newspaper .document-content{
     column-count:2;
-
     column-gap:42px;
+    column-rule:1px solid #d5d8dc;
+}
 
-    column-rule:
-        1px solid #ccc;
+.page.newspaper .document-content h1,
+.page.newspaper .document-content h2,
+.page.newspaper .document-content h3{
+    column-span:all;
+}
+
+.page.newspaper .document-content img,
+.page.newspaper .document-content table,
+.page.newspaper .document-content blockquote{
+    break-inside:avoid;
+}
+
+.page.focus .page-header,
+.page.focus .page-footer{
+    display:none;
+}
+
+.page.focus{
+    padding-top:55px;
+}
+
+.page.dark{
+    background:#202124;
+    color:#f5f5f5;
+}
+
+.page.dark .page-header,
+.page.dark .page-footer{
+    color:#aaa;
+    border-color:#444;
+}
+
+.page.dark .document-content blockquote{
+    background:#303134;
+}
+
+.page.dark .document-content th{
+    background:#303134;
 }
 
 /* =========================================================
-   EDITABLE ELEMENTS
+   SPECIAL INSERTS
    ========================================================= */
 
-.document-page p{
-    margin:
-        0 0 12px;
-}
-
-.document-page h1{
-    font-family:
-        Playfair Display,
-        Georgia,
-        serif;
-
-    font-size:42px;
-
-    line-height:1.2;
-
-    margin:
-        20px 0;
-}
-
-.document-page h2{
-    font-size:32px;
-}
-
-.document-page h3{
-    font-size:26px;
-}
-
-.document-page h4{
-    font-size:22px;
-}
-
-.document-page h5{
-    font-size:19px;
-}
-
-.document-page h6{
-    font-size:17px;
-}
-
-.document-page blockquote{
-
-    border-left:
-        5px solid var(--orange);
-
-    padding-left:20px;
-
-    margin:
-        20px 0;
-
-    color:#60666b;
-
-    font-style:italic;
-}
-
-/* =========================================================
-   TABLES
-   ========================================================= */
-
-.document-page table{
-
-    border-collapse:collapse;
-
-    width:100%;
-
-    margin:
-        18px 0;
-}
-
-.document-page td,
-.document-page th{
-
-    border:
-        1px solid #cfd4d9;
-
-    padding:
-        9px;
-
-    min-width:70px;
-}
-
-/* =========================================================
-   MATH BLOCK
-   ========================================================= */
-
-.math-block{
-
+.math-square{
     display:inline-flex;
-
+    width:55px;
+    height:55px;
+    margin:4px;
+    border:2px solid #222;
+    background:#fff;
     align-items:center;
-
-    gap:8px;
-
-    padding:
-        8px 12px;
-
-    margin:
-        4px;
-
-    border:
-        2px solid #333;
-
-    background:white;
-
-    font-family:
-        "Times New Roman",
-        serif;
-
-    font-size:20px;
-
-    border-radius:4px;
-
-    cursor:text;
-}
-
-.math-fraction{
-
-    display:inline-flex;
-
-    flex-direction:column;
-
-    text-align:center;
-
+    justify-content:center;
     vertical-align:middle;
-
+    font-size:18px;
+    font-weight:600;
+    min-width:55px;
+    min-height:55px;
 }
 
-.math-fraction .top{
-
-    border-bottom:
-        1px solid #222;
-
-    padding:
-        0 7px 2px;
+.math-square:focus{
+    outline:2px solid #ff9800;
 }
 
-.math-fraction .bottom{
-
-    padding:
-        2px 7px 0;
+.math-equation{
+    display:block;
+    margin:18px auto;
+    padding:15px 20px;
+    border:1px solid #cfd4da;
+    border-radius:10px;
+    background:#fafafa;
+    font-family:"Roboto Mono",monospace;
+    text-align:center;
+    max-width:90%;
 }
 
-/* =========================================================
-   DRAWING / OBJECTS
-   ========================================================= */
-
-.draggable-object{
-
-    position:relative;
-
-    display:inline-block;
-
-    user-select:none;
-
-    cursor:move;
-
-    outline:2px solid transparent;
+.callout{
+    padding:18px;
+    margin:18px 0;
+    border-radius:14px;
+    background:linear-gradient(
+        135deg,
+        rgba(255,190,60,.18),
+        rgba(255,95,162,.12)
+    );
+    border:1px solid rgba(255,155,35,.35);
 }
 
-.draggable-object.selected{
+.checklist-item{
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+    margin:7px 0;
+}
 
-    outline:
-        2px solid var(--orange);
+.checklist-item input{
+    margin-top:6px;
 }
 
 /* =========================================================
@@ -743,525 +688,415 @@ body{
    ========================================================= */
 
 .statusbar{
-
-    position:fixed;
-
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:38px;
-
+    height:34px;
+    flex-shrink:0;
     background:white;
-
-    border-top:
-        1px solid #d8dce0;
-
+    border-top:1px solid var(--border);
     display:flex;
-
     align-items:center;
-
-    padding:
-        0 16px;
-
-    gap:20px;
-
-    font-size:12px;
-
-    color:#626970;
-
-    z-index:1000;
+    justify-content:space-between;
+    padding:0 13px;
+    color:#737982;
+    font-size:11px;
+    z-index:40;
 }
 
+.status-left,
 .status-right{
-
-    margin-left:auto;
-
     display:flex;
-
-    gap:16px;
-
     align-items:center;
+    gap:14px;
 }
 
 /* =========================================================
-   PANELS
+   PANELS / MODALS
    ========================================================= */
 
-.panel{
-
+.modal-backdrop{
     position:fixed;
-
-    right:18px;
-
-    top:135px;
-
-    width:340px;
-
-    max-height:
-        calc(100vh - 180px);
-
-    overflow:auto;
-
-    background:white;
-
-    border:
-        1px solid #ddd;
-
-    border-radius:18px;
-
-    box-shadow:
-        0 15px 45px rgba(0,0,0,.2);
-
-    z-index:1500;
-
+    inset:0;
+    z-index:200;
+    background:rgba(15,18,24,.48);
+    backdrop-filter:blur(6px);
     display:none;
-}
-
-.panel.open{
-    display:block;
-}
-
-.panel-header{
-
-    display:flex;
-
     align-items:center;
-
-    justify-content:space-between;
-
-    padding:
-        16px 18px;
-
-    border-bottom:
-        1px solid #eee;
-
-    font-weight:800;
-}
-
-.panel-body{
-    padding:18px;
-}
-
-.setting{
-
-    margin-bottom:18px;
-}
-
-.setting label{
-
-    display:block;
-
-    font-size:13px;
-
-    font-weight:700;
-
-    margin-bottom:7px;
-}
-
-.setting-row{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:10px;
-}
-
-/* =========================================================
-   SWITCHES
-   ========================================================= */
-
-.switch{
-
-    width:48px;
-    height:27px;
-
-    background:#d9dde1;
-
-    border-radius:20px;
-
-    padding:3px;
-
-    cursor:pointer;
-
-    transition:.2s;
-}
-
-.switch span{
-
-    display:block;
-
-    width:21px;
-    height:21px;
-
-    background:white;
-
-    border-radius:50%;
-
-    box-shadow:
-        0 2px 5px rgba(0,0,0,.2);
-
-    transition:.2s;
-}
-
-.switch.on{
-
-    background:var(--orange);
-}
-
-.switch.on span{
-
-    transform:
-        translateX(21px);
-}
-
-/* =========================================================
-   FIND BAR
-   ========================================================= */
-
-.find-bar{
-
-    position:fixed;
-
-    top:135px;
-
-    left:50%;
-
-    transform:
-        translateX(-50%);
-
-    background:white;
-
-    border:
-        1px solid #ddd;
-
-    border-radius:14px;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.18);
-
-    padding:10px;
-
-    display:none;
-
-    z-index:1600;
-
-    gap:6px;
-
-    align-items:center;
-}
-
-.find-bar.open{
-    display:flex;
-}
-
-.find-bar input{
-
-    width:250px;
-
-    border:
-        1px solid #ddd;
-
-    border-radius:8px;
-
-    padding:9px;
-
-    outline:none;
-}
-
-/* =========================================================
-   PRESENT MODE
-   ========================================================= */
-
-body.present-mode{
-
-    background:#000;
-
-}
-
-body.present-mode .topbar,
-body.present-mode .toolbar,
-body.present-mode .statusbar{
-
-    display:none;
-}
-
-body.present-mode .editor-area{
-
-    height:100vh;
-
-    padding:40px;
-
-    display:flex;
-
     justify-content:center;
-
-    align-items:flex-start;
-
-    overflow:auto;
+    padding:20px;
 }
 
-body.present-mode .document-page{
+.modal-backdrop.show{
+    display:flex;
+}
 
-    box-shadow:
-        0 0 80px rgba(255,255,255,.1);
+.modal{
+    width:min(650px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:20px;
+    box-shadow:0 30px 90px rgba(0,0,0,.28);
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 22px;
+    border-bottom:1px solid #eceef1;
+}
+
+.modal-header h2{
+    margin:0;
+    font-size:19px;
+}
+
+.modal-body{
+    padding:22px;
+}
+
+.modal-actions{
+    padding:15px 22px;
+    border-top:1px solid #eceef1;
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+}
+
+.primary-btn{
+    border:0;
+    border-radius:10px;
+    padding:10px 16px;
+    color:#fff;
+    font-weight:700;
+    background:linear-gradient(135deg,#ffb11b,#ff6d00);
+    box-shadow:0 6px 15px rgba(255,130,0,.2);
+}
+
+.secondary-btn{
+    border:1px solid #dfe3e8;
+    background:#fff;
+    border-radius:10px;
+    padding:10px 16px;
+    font-weight:600;
 }
 
 /* =========================================================
-   FOCUS MODE
+   PRESENTATION
    ========================================================= */
 
-body.focus-mode .topbar,
-body.focus-mode .toolbar,
-body.focus-mode .statusbar{
+.presentation{
+    position:fixed;
+    inset:0;
+    z-index:500;
+    display:none;
+    background:#08090c;
+    color:white;
+}
 
+.presentation.show{
+    display:block;
+}
+
+.presentation-stage{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:45px;
+    overflow:hidden;
+}
+
+.presentation-page{
+    position:relative;
+    width:min(1100px,90vw);
+    height:min(78vh,760px);
+    background:white;
+    color:#202124;
+    padding:70px;
+    border-radius:5px;
+    overflow:auto;
+    box-shadow:0 30px 100px rgba(0,0,0,.5);
+}
+
+.presentation-page .document-content{
+    min-height:auto;
+}
+
+.presentation-page .page-header,
+.presentation-page .page-footer{
     display:none;
 }
 
-body.focus-mode .editor-area{
-
-    height:100vh;
-
-    padding-top:70px;
-}
-
-/* =========================================================
-   DARK MODE
-   ========================================================= */
-
-body.dark-editor{
-
-    --editor-bg:#17191c;
-}
-
-body.dark-editor .topbar,
-body.dark-editor .toolbar,
-body.dark-editor .statusbar,
-body.dark-editor .panel{
-
-    background:#24272b;
-
-    color:#f4f4f4;
-
-    border-color:#3a3e43;
-}
-
-body.dark-editor .document-page{
-
-    background:#202327;
-
-    color:#f5f5f5;
-}
-
-body.dark-editor .document-page.ruled{
-
-    background-color:#202327;
-
+.presentation-page.ruled{
+    background-color:#fff;
     background-image:
         repeating-linear-gradient(
             to bottom,
             transparent 0,
-            transparent 31px,
-            #394b60 31px,
-            #394b60 32px
+            transparent 35px,
+            rgba(90,140,220,.22) 36px,
+            transparent 37px
         );
 }
 
-body.dark-editor .document-page.math-grid{
-
-    background-color:#202327;
-
+.presentation-page.math-grid{
     background-image:
-        linear-gradient(
-            #394b60 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            #394b60 1px,
-            transparent 1px
-        );
+        linear-gradient(rgba(70,120,200,.19) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(70,120,200,.19) 1px,transparent 1px);
+    background-size:30px 30px;
+}
+
+.presentation-page.newspaper .document-content{
+    column-count:2;
+    column-gap:45px;
+}
+
+.presentation-page.dark{
+    background:#202124;
+    color:#fff;
+}
+
+.presentation-toolbar{
+    position:absolute;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%);
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:8px;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:16px;
+    background:rgba(25,27,32,.9);
+    backdrop-filter:blur(14px);
+    box-shadow:0 15px 45px rgba(0,0,0,.4);
+}
+
+.present-btn{
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:10px;
+    color:white;
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.present-btn:hover{
+    background:rgba(255,255,255,.1);
+}
+
+.present-btn.active{
+    background:#ff8a00;
+}
+
+.present-color{
+    width:30px;
+    height:30px;
+    border:2px solid white;
+    border-radius:50%;
+    padding:0;
+}
+
+.present-size{
+    width:90px;
+}
+
+.presentation-title{
+    position:absolute;
+    top:17px;
+    left:25px;
+    font-weight:700;
+    font-size:14px;
+    color:rgba(255,255,255,.8);
+}
+
+.presentation-help{
+    position:absolute;
+    top:17px;
+    right:25px;
+    font-size:11px;
+    color:rgba(255,255,255,.5);
+}
+
+/* annotation canvas */
+
+#annotationCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:10;
+    pointer-events:none;
+}
+
+.presentation.annotating #annotationCanvas{
+    pointer-events:auto;
+    cursor:crosshair;
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast{
+    position:fixed;
+    right:22px;
+    bottom:55px;
+    z-index:700;
+    background:#202124;
+    color:#fff;
+    border-radius:10px;
+    padding:11px 15px;
+    font-size:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    opacity:0;
+    transform:translateY(10px);
+    pointer-events:none;
+    transition:.2s;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0);
 }
 
 /* =========================================================
    MOBILE
    ========================================================= */
 
-@media(max-width:900px){
+@media(max-width:800px){
+
+    .topbar{
+        height:58px;
+        padding:0 9px;
+        gap:6px;
+    }
+
+    .brand{
+        min-width:auto;
+    }
 
     .brand-name{
         display:none;
     }
 
-    .document-title{
-        width:160px;
+    .document-name{
+        max-width:none;
+    }
+
+    .top-actions .optional{
+        display:none;
+    }
+
+    .toolbar{
+        padding:5px;
     }
 
     .editor-area{
-        padding:
-            25px 8px 100px;
+        padding:20px 10px 70px;
     }
 
-    .page-wrap{
-        width:100%;
+    .page{
+        width:calc(100vw - 25px);
+        min-height:calc(100vh - 120px);
+        padding:65px 28px 70px;
     }
 
-    .document-page{
-
-        width:
-            min(850px,100%);
-
-        min-height:
-            1000px;
-
-        padding:
-            45px 30px 70px;
-
-        transform:none;
+    .page-header{
+        left:28px;
+        right:28px;
     }
 
-    .panel{
-        left:10px;
-        right:10px;
-        width:auto;
+    .page-footer{
+        left:28px;
+        right:28px;
     }
 
+    .page.ruled.margin-line:after{
+        left:70px;
+    }
+
+    .presentation-stage{
+        padding:15px;
+    }
+
+    .presentation-page{
+        width:96vw;
+        height:88vh;
+        padding:35px;
+    }
+
+    .presentation-toolbar{
+        bottom:8px;
+        max-width:96vw;
+        overflow-x:auto;
+    }
 }
-
-/* =========================================================
-   PRINT
-   ========================================================= */
-
-@media print{
-
-    body{
-        background:white !important;
-    }
-
-    .topbar,
-    .toolbar,
-    .statusbar,
-    .panel,
-    .find-bar{
-        display:none !important;
-    }
-
-    .editor-area{
-        padding:0 !important;
-        overflow:visible !important;
-    }
-
-    .document-page{
-        box-shadow:none !important;
-        margin:0 !important;
-        width:100% !important;
-        transform:none !important;
-    }
-
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- =======================================================
+<div class="docbird-app">
+
+<!-- ======================================================
      TOP BAR
-     ======================================================= -->
+     ====================================================== -->
 
 <header class="topbar">
 
     <div class="brand">
-
-        <div class="brand-mark">
-            D
-        </div>
-
-        <div class="brand-name">
-            DocBird
-        </div>
-
+        <div class="brand-logo">D</div>
+        <div class="brand-name">DocBird</div>
     </div>
 
-    <button
-        class="icon-button"
-        title="Back to dashboard"
-        onclick="goDashboard()">
-
-        <span class="material-symbols-outlined">
-            arrow_back
-        </span>
-
-    </button>
-
-    <input
-        id="documentTitle"
-        class="document-title"
-        value="Untitled Document"
-        aria-label="Document title">
+    <div class="document-name">
+        <input
+            id="documentTitle"
+            type="text"
+            value="Untitled document"
+            aria-label="Document name"
+            autocomplete="off"
+        >
+    </div>
 
     <div class="top-actions">
 
-        <button
-            class="icon-button"
-            id="undoButton"
-            title="Undo"
-            onclick="runCommand('undo')">
-
-            <span class="material-symbols-outlined">
-                undo
-            </span>
-
+        <button class="icon-btn" id="saveBtn" title="Save">
+            <span class="material-symbols-outlined">cloud_done</span>
         </button>
 
-        <button
-            class="icon-button"
-            id="redoButton"
-            title="Redo"
-            onclick="runCommand('redo')">
-
-            <span class="material-symbols-outlined">
-                redo
-            </span>
-
+        <button class="icon-btn" id="undoBtn" title="Undo">
+            <span class="material-symbols-outlined">undo</span>
         </button>
 
-        <button
-            class="icon-button"
-            title="Find"
-            onclick="toggleFind()">
-
-            <span class="material-symbols-outlined">
-                search
-            </span>
-
+        <button class="icon-btn" id="redoBtn" title="Redo">
+            <span class="material-symbols-outlined">redo</span>
         </button>
 
-        <button
-            class="icon-button"
-            id="fullscreenButton"
-            title="Fullscreen"
-            onclick="toggleFullscreen()">
-
-            <span class="material-symbols-outlined">
-                fullscreen
-            </span>
-
+        <button class="icon-btn optional" id="findBtn" title="Find and replace">
+            <span class="material-symbols-outlined">find_replace</span>
         </button>
 
-        <button
-            class="primary-button"
-            onclick="saveDocument()">
+        <button class="icon-btn optional" id="uploadBtn" title="Upload files">
+            <span class="material-symbols-outlined">upload_file</span>
+        </button>
 
-            <span class="material-symbols-outlined">
-                save
-            </span>
+        <button class="icon-btn" id="presentBtn" title="Present">
+            <span class="material-symbols-outlined">present_to_all</span>
+        </button>
 
-            Save
+        <button class="icon-btn" id="settingsBtn" title="Settings">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
 
+        <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">
+            <span class="material-symbols-outlined">fullscreen</span>
         </button>
 
     </div>
@@ -1269,975 +1104,803 @@ body.dark-editor .document-page.math-grid{
 </header>
 
 
-<!-- =======================================================
+<!-- ======================================================
      TOOLBAR
-     ======================================================= -->
+     ====================================================== -->
 
-<nav class="toolbar" id="toolbar">
+<div class="toolbar-wrap">
 
-    <!-- History -->
+<div class="toolbar">
 
-    <div class="toolbar-group">
+    <!-- undo / redo -->
 
-        <button
-            class="tool"
-            title="Undo"
-            onclick="runCommand('undo')">
+    <div class="tool-group">
 
-            <span class="material-symbols-outlined">
-                undo
-            </span>
-
+        <button class="tool-btn" id="toolbarUndo" title="Undo">
+            <span class="material-symbols-outlined">undo</span>
         </button>
 
-        <button
-            class="tool"
-            title="Redo"
-            onclick="runCommand('redo')">
-
-            <span class="material-symbols-outlined">
-                redo
-            </span>
-
+        <button class="tool-btn" id="toolbarRedo" title="Redo">
+            <span class="material-symbols-outlined">redo</span>
         </button>
 
     </div>
 
 
-    <!-- Style -->
+    <!-- style -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <select
-            class="select"
-            id="formatSelect"
-            onchange="formatBlock(this.value)">
-
-            <option value="p">
-                Normal text
-            </option>
-
-            <option value="h1">
-                Heading 1
-            </option>
-
-            <option value="h2">
-                Heading 2
-            </option>
-
-            <option value="h3">
-                Heading 3
-            </option>
-
-            <option value="h4">
-                Heading 4
-            </option>
-
-            <option value="h5">
-                Heading 5
-            </option>
-
-            <option value="h6">
-                Heading 6
-            </option>
-
-            <option value="blockquote">
-                Quote
-            </option>
-
+        <select class="tool-select" id="formatSelect">
+            <option value="p">Normal text</option>
+            <option value="h1">Heading 1</option>
+            <option value="h2">Heading 2</option>
+            <option value="h3">Heading 3</option>
+            <option value="h4">Heading 4</option>
+            <option value="h5">Heading 5</option>
+            <option value="h6">Heading 6</option>
+            <option value="blockquote">Quote</option>
+            <option value="pre">Code</option>
         </select>
 
-
-        <select
-            class="select"
-            id="fontSelect"
-            onchange="changeFont(this.value)">
-
-            <option value="Inter">
-                Inter
-            </option>
-
-            <option value="Poppins">
-                Poppins
-            </option>
-
-            <option value="Arial">
-                Arial
-            </option>
-
-            <option value="Georgia">
-                Georgia
-            </option>
-
-            <option value="Merriweather">
-                Merriweather
-            </option>
-
-            <option value="Playfair Display">
-                Playfair Display
-            </option>
-
-            <option value="Roboto Mono">
-                Roboto Mono
-            </option>
-
+        <select class="tool-select font-select" id="fontSelect">
+            <option value="Inter">Inter</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Playfair Display">Playfair Display</option>
+            <option value="Merriweather">Merriweather</option>
+            <option value="Roboto Mono">Roboto Mono</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
         </select>
 
-
-        <select
-            class="select"
-            id="sizeSelect"
-            onchange="changeFontSize(this.value)">
-
-            <option value="1">
-                10
-            </option>
-
-            <option value="2">
-                12
-            </option>
-
-            <option value="3"
-                    selected>
-                16
-            </option>
-
-            <option value="4">
-                18
-            </option>
-
-            <option value="5">
-                24
-            </option>
-
-            <option value="6">
-                32
-            </option>
-
-            <option value="7">
-                48
-            </option>
-
+        <select class="tool-select size-select" id="sizeSelect">
+            <option value="10px">10</option>
+            <option value="12px">12</option>
+            <option value="14px">14</option>
+            <option value="16px" selected>16</option>
+            <option value="18px">18</option>
+            <option value="20px">20</option>
+            <option value="24px">24</option>
+            <option value="28px">28</option>
+            <option value="32px">32</option>
+            <option value="40px">40</option>
+            <option value="48px">48</option>
+            <option value="60px">60</option>
         </select>
 
     </div>
 
 
-    <!-- Text formatting -->
+    <!-- text -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="tool command-button"
-            data-command="bold"
-            title="Bold"
-            onclick="runCommand('bold')">
-
-            <b>B</b>
-
+        <button class="tool-btn" data-command="bold" title="Bold">
+            <span class="material-symbols-outlined">format_bold</span>
         </button>
 
-        <button
-            class="tool command-button"
-            data-command="italic"
-            title="Italic"
-            onclick="runCommand('italic')">
-
-            <i>I</i>
-
+        <button class="tool-btn" data-command="italic" title="Italic">
+            <span class="material-symbols-outlined">format_italic</span>
         </button>
 
-        <button
-            class="tool command-button"
-            data-command="underline"
-            title="Underline"
-            onclick="runCommand('underline')">
-
-            <u>U</u>
-
+        <button class="tool-btn" data-command="underline" title="Underline">
+            <span class="material-symbols-outlined">format_underlined</span>
         </button>
 
-        <button
-            class="tool command-button"
-            data-command="strikeThrough"
-            title="Strikethrough"
-            onclick="runCommand('strikeThrough')">
-
-            <span class="material-symbols-outlined">
-                strikethrough_s
-            </span>
-
+        <button class="tool-btn" data-command="strikeThrough" title="Strikethrough">
+            <span class="material-symbols-outlined">strikethrough_s</span>
         </button>
 
-        <button
-            class="tool command-button"
-            data-command="superscript"
-            title="Superscript"
-            onclick="runCommand('superscript')">
-
-            x²
-
+        <button class="tool-btn" data-command="superscript" title="Superscript">
+            <span class="material-symbols-outlined">superscript</span>
         </button>
 
-        <button
-            class="tool command-button"
-            data-command="subscript"
-            title="Subscript"
-            onclick="runCommand('subscript')">
-
-            x₂
-
+        <button class="tool-btn" data-command="subscript" title="Subscript">
+            <span class="material-symbols-outlined">subscript</span>
         </button>
 
     </div>
 
 
-    <!-- Colours -->
+    <!-- colours -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="color-button"
-            title="Text colour"
-            onclick="chooseTextColor()">
+        <div class="color-control">
 
-            <span class="material-symbols-outlined">
-                format_color_text
-            </span>
+            <input id="textColor" type="color" value="#202124">
 
-            <span
-                class="color-preview"
-                id="textColorPreview">
-            </span>
+            <button class="color-button" id="textColorButton" title="Text colour">
+                <span class="color-preview" id="textColorPreview" style="background:#202124"></span>
+            </button>
 
-        </button>
+        </div>
 
-        <button
-            class="color-button"
-            title="Highlight"
-            onclick="chooseHighlight()">
+        <div class="color-control">
 
-            <span class="material-symbols-outlined">
-                ink_highlighter
-            </span>
+            <input id="highlightColor" type="color" value="#fff176">
 
-            <span
-                class="color-preview highlight-preview">
-            </span>
+            <button class="color-button" id="highlightButton" title="Highlight">
+                <span
+                    class="color-preview"
+                    id="highlightPreview"
+                    style="background:#fff176"
+                ></span>
+            </button>
 
-        </button>
+        </div>
 
-        <input
-            type="color"
-            id="textColor"
-            value="#202124"
-            hidden>
-
-        <input
-            type="color"
-            id="highlightColor"
-            value="#fff36b"
-            hidden>
-
-    </div>
-
-
-    <!-- Alignment -->
-
-    <div class="toolbar-group">
-
-        <button
-            class="tool command-button"
-            data-command="justifyLeft"
-            title="Align left"
-            onclick="runCommand('justifyLeft')">
-
-            <span class="material-symbols-outlined">
-                format_align_left
-            </span>
-
-        </button>
-
-        <button
-            class="tool command-button"
-            data-command="justifyCenter"
-            title="Center"
-            onclick="runCommand('justifyCenter')">
-
-            <span class="material-symbols-outlined">
-                format_align_center
-            </span>
-
-        </button>
-
-        <button
-            class="tool command-button"
-            data-command="justifyRight"
-            title="Align right"
-            onclick="runCommand('justifyRight')">
-
-            <span class="material-symbols-outlined">
-                format_align_right
-            </span>
-
-        </button>
-
-        <button
-            class="tool command-button"
-            data-command="justifyFull"
-            title="Justify"
-            onclick="runCommand('justifyFull')">
-
-            <span class="material-symbols-outlined">
-                format_align_justify
-            </span>
-
+        <button class="tool-btn" id="clearFormatBtn" title="Clear formatting">
+            <span class="material-symbols-outlined">format_clear</span>
         </button>
 
     </div>
 
 
-    <!-- Lists -->
+    <!-- alignment -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="tool"
-            title="Bulleted list"
-            onclick="runCommand('insertUnorderedList')">
-
-            <span class="material-symbols-outlined">
-                format_list_bulleted
-            </span>
-
+        <button class="tool-btn" data-command="justifyLeft" title="Align left">
+            <span class="material-symbols-outlined">format_align_left</span>
         </button>
 
-        <button
-            class="tool"
-            title="Numbered list"
-            onclick="runCommand('insertOrderedList')">
-
-            <span class="material-symbols-outlined">
-                format_list_numbered
-            </span>
-
+        <button class="tool-btn" data-command="justifyCenter" title="Align center">
+            <span class="material-symbols-outlined">format_align_center</span>
         </button>
 
-        <button
-            class="tool"
-            title="Indent"
-            onclick="runCommand('indent')">
-
-            <span class="material-symbols-outlined">
-                format_indent_increase
-            </span>
-
+        <button class="tool-btn" data-command="justifyRight" title="Align right">
+            <span class="material-symbols-outlined">format_align_right</span>
         </button>
 
-        <button
-            class="tool"
-            title="Outdent"
-            onclick="runCommand('outdent')">
-
-            <span class="material-symbols-outlined">
-                format_indent_decrease
-            </span>
-
+        <button class="tool-btn" data-command="justifyFull" title="Justify">
+            <span class="material-symbols-outlined">format_align_justify</span>
         </button>
 
     </div>
 
 
-    <!-- Insert -->
+    <!-- lists -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="tool"
-            title="Insert link"
-            onclick="insertLink()">
-
-            <span class="material-symbols-outlined">
-                link
-            </span>
-
+        <button class="tool-btn" data-command="insertUnorderedList" title="Bulleted list">
+            <span class="material-symbols-outlined">format_list_bulleted</span>
         </button>
 
-        <button
-            class="tool"
-            title="Insert image"
-            onclick="insertImage()">
-
-            <span class="material-symbols-outlined">
-                image
-            </span>
-
+        <button class="tool-btn" data-command="insertOrderedList" title="Numbered list">
+            <span class="material-symbols-outlined">format_list_numbered</span>
         </button>
 
-        <button
-            class="tool"
-            title="Insert table"
-            onclick="insertTable()">
-
-            <span class="material-symbols-outlined">
-                table
-            </span>
-
+        <button class="tool-btn" data-command="outdent" title="Decrease indent">
+            <span class="material-symbols-outlined">format_indent_decrease</span>
         </button>
 
-        <button
-            class="tool"
-            title="Horizontal line"
-            onclick="runCommand('insertHorizontalRule')">
-
-            <span class="material-symbols-outlined">
-                horizontal_rule
-            </span>
-
+        <button class="tool-btn" data-command="indent" title="Increase indent">
+            <span class="material-symbols-outlined">format_indent_increase</span>
         </button>
 
     </div>
 
 
-    <!-- Maths -->
+    <!-- insert -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="tool"
-            id="mathButton"
-            title="Insert maths square"
-            onclick="insertMathSquare()">
-
-            <span class="material-symbols-outlined">
-                calculate
-            </span>
-
+        <button class="tool-btn" id="linkBtn" title="Insert link">
+            <span class="material-symbols-outlined">link</span>
         </button>
 
-        <button
-            class="tool"
-            title="Insert fraction"
-            onclick="insertFraction()">
-
-            <span class="material-symbols-outlined">
-                fraction
-            </span>
-
+        <button class="tool-btn" id="imageBtn" title="Insert image">
+            <span class="material-symbols-outlined">image</span>
         </button>
 
-        <button
-            class="tool"
-            title="Insert equation"
-            onclick="insertEquation()">
+        <button class="tool-btn" id="tableBtn" title="Insert table">
+            <span class="material-symbols-outlined">table</span>
+        </button>
 
-            <span class="material-symbols-outlined">
-                functions
-            </span>
+        <button class="tool-btn" id="lineBtn" title="Insert line">
+            <span class="material-symbols-outlined">horizontal_rule</span>
+        </button>
 
+        <button class="tool-btn" id="pageBreakBtn" title="Page break">
+            <span class="material-symbols-outlined">insert_page_break</span>
+        </button>
+
+        <button class="tool-btn" id="calloutBtn" title="Callout">
+            <span class="material-symbols-outlined">info</span>
         </button>
 
     </div>
 
 
-    <!-- Paper -->
+    <!-- maths -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="tool"
-            id="linesButton"
-            title="Ruled lines"
-            onclick="toggleRuled()">
-
-            <span class="material-symbols-outlined">
-                horizontal_distribute
-            </span>
-
+        <button class="tool-btn" id="mathSquareBtn" title="Maths square">
+            <span class="material-symbols-outlined">grid_3x3</span>
         </button>
 
-        <button
-            class="tool"
-            id="gridButton"
-            title="Maths squares"
-            onclick="toggleMathGrid()">
-
-            <span class="material-symbols-outlined">
-                grid_4x4
-            </span>
-
-        </button>
-
-        <button
-            class="tool"
-            id="newspaperButton"
-            title="Newspaper mode"
-            onclick="toggleNewspaper()">
-
-            <span class="material-symbols-outlined">
-                newspaper
-            </span>
-
+        <button class="tool-btn" id="equationBtn" title="Equation">
+            <span class="material-symbols-outlined">functions</span>
         </button>
 
     </div>
 
 
-    <!-- View -->
+    <!-- view -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="tool"
-            id="focusButton"
-            title="Focus mode"
-            onclick="toggleFocus()">
-
-            <span class="material-symbols-outlined">
-                center_focus_strong
-            </span>
-
+        <button class="tool-btn" id="ruledBtn" title="Ruled lines">
+            <span class="material-symbols-outlined">reorder</span>
         </button>
 
-        <button
-            class="tool"
-            id="darkButton"
-            title="Dark mode"
-            onclick="toggleDark()">
-
-            <span class="material-symbols-outlined">
-                dark_mode
-            </span>
-
+        <button class="tool-btn" id="mathGridBtn" title="Maths grid">
+            <span class="material-symbols-outlined">grid_on</span>
         </button>
 
-        <button
-            class="tool"
-            title="Present"
-            onclick="presentDocument()">
-
-            <span class="material-symbols-outlined">
-                present_to_all
-            </span>
-
-        </button>
-
-        <button
-            class="tool"
-            title="Settings"
-            onclick="toggleSettings()">
-
-            <span class="material-symbols-outlined">
-                settings
-            </span>
-
+        <button class="tool-btn" id="newspaperBtn" title="Newspaper mode">
+            <span class="material-symbols-outlined">newspaper</span>
         </button>
 
     </div>
 
 
-    <!-- Zoom -->
+    <!-- zoom -->
 
-    <div class="toolbar-group">
+    <div class="tool-group">
 
-        <button
-            class="tool"
-            onclick="changeZoom(-.1)"
-            title="Zoom out">
-
-            <span class="material-symbols-outlined">
-                remove
-            </span>
-
+        <button class="tool-btn" id="zoomOutBtn" title="Zoom out">
+            <span class="material-symbols-outlined">remove</span>
         </button>
 
-        <span
-            id="zoomLabel"
-            style="
-                min-width:48px;
-                text-align:center;
-                font-size:13px;
-                font-weight:700;
-            ">
+        <button class="tool-btn" id="zoomLabel" title="Zoom">
             100%
-        </span>
+        </button>
 
-        <button
-            class="tool"
-            onclick="changeZoom(.1)"
-            title="Zoom in">
-
-            <span class="material-symbols-outlined">
-                add
-            </span>
-
+        <button class="tool-btn" id="zoomInBtn" title="Zoom in">
+            <span class="material-symbols-outlined">add</span>
         </button>
 
     </div>
 
-</nav>
+</div>
+</div>
 
 
-<!-- =======================================================
-     EDITOR
-     ======================================================= -->
+<!-- ======================================================
+     WORKSPACE
+     ====================================================== -->
 
-<main class="editor-area" id="editorArea">
+<div class="workspace">
 
-    <div class="page-wrap">
+    <aside class="side-panel" id="sidePanel">
 
-        <article
-            id="documentPage"
-            class="document-page"
-            contenteditable="true"
-            spellcheck="true">
+        <div class="panel-header">
 
-            <div
-                id="articleContent"
-                class="article-content">
+            <strong>Document settings</strong>
 
-                <h1>Untitled Document</h1>
+            <button class="icon-btn" id="closeSettings">
+                <span class="material-symbols-outlined">close</span>
+            </button>
 
-                <p>
-                    Start writing your document here.
-                </p>
+        </div>
 
+        <div class="panel-content">
+
+            <div class="setting">
+                <label>
+                    Ruled paper
+
+                    <span class="switch">
+                        <input id="ruledSwitch" type="checkbox">
+                        <span class="slider"></span>
+                    </span>
+                </label>
+
+                <small>Show horizontal writing lines.</small>
             </div>
 
-        </article>
 
-    </div>
+            <div class="setting">
+                <label>
+                    Red margin line
 
-</main>
+                    <span class="switch">
+                        <input id="marginSwitch" type="checkbox">
+                        <span class="slider"></span>
+                    </span>
+                </label>
+
+                <small>Add a notebook-style red margin.</small>
+            </div>
 
 
-<!-- =======================================================
-     FIND
-     ======================================================= -->
+            <div class="setting">
+                <label>
+                    Maths grid
 
-<div
-    class="find-bar"
-    id="findBar">
+                    <span class="switch">
+                        <input id="gridSwitch" type="checkbox">
+                        <span class="slider"></span>
+                    </span>
+                </label>
 
-    <span class="material-symbols-outlined">
-        search
-    </span>
+                <small>Show visible mathematical grid squares.</small>
+            </div>
 
-    <input
-        id="findInput"
-        placeholder="Find text">
 
-    <input
-        id="replaceInput"
-        placeholder="Replace with">
+            <div class="setting">
+                <label>
+                    Large maths grid
 
-    <button
-        class="icon-button"
-        onclick="findNext()">
+                    <span class="switch">
+                        <input id="largeGridSwitch" type="checkbox">
+                        <span class="slider"></span>
+                    </span>
+                </label>
+            </div>
 
-        <span class="material-symbols-outlined">
-            arrow_downward
-        </span>
 
-    </button>
+            <div class="setting">
+                <label>
+                    Newspaper mode
 
-    <button
-        class="icon-button"
-        onclick="replaceCurrent()">
+                    <span class="switch">
+                        <input id="newspaperSwitch" type="checkbox">
+                        <span class="slider"></span>
+                    </span>
+                </label>
 
-        <span class="material-symbols-outlined">
-            find_replace
-        </span>
+                <small>Split the document into two newspaper columns.</small>
+            </div>
 
-    </button>
 
-    <button
-        class="icon-button"
-        onclick="toggleFind()">
+            <div class="setting">
+                <label>
+                    Dark page
 
-        <span class="material-symbols-outlined">
-            close
-        </span>
+                    <span class="switch">
+                        <input id="darkSwitch" type="checkbox">
+                        <span class="slider"></span>
+                    </span>
+                </label>
+            </div>
 
-    </button>
+
+            <div class="setting">
+                <label>
+                    Focus mode
+
+                    <span class="switch">
+                        <input id="focusSwitch" type="checkbox">
+                        <span class="slider"></span>
+                    </span>
+                </label>
+            </div>
+
+
+            <div class="setting">
+                <label>
+                    Header
+
+                    <span class="switch">
+                        <input id="headerSwitch" type="checkbox" checked>
+                        <span class="slider"></span>
+                    </span>
+                </label>
+            </div>
+
+
+            <div class="setting">
+                <label>
+                    Footer
+
+                    <span class="switch">
+                        <input id="footerSwitch" type="checkbox" checked>
+                        <span class="slider"></span>
+                    </span>
+                </label>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <main class="editor-area" id="editorArea">
+
+        <div class="pages">
+
+            <article class="page" id="documentPage">
+
+                <div class="page-header" id="pageHeader">
+                    DOCBIRD • DOCUMENT
+                </div>
+
+                <div
+                    class="document-content"
+                    id="editor"
+                    contenteditable="true"
+                    spellcheck="true"
+                    tabindex="0"
+                >
+                    <h1>Untitled document</h1>
+
+                    <p>
+                        Start writing your document here.
+                    </p>
+
+                    <p>
+                        Select text and then choose a font or size to change
+                        <strong>only the selected text</strong>.
+                    </p>
+                </div>
+
+                <div class="page-footer" id="pageFooter">
+                    <span>DocBird</span>
+                    <span>Page 1</span>
+                </div>
+
+            </article>
+
+        </div>
+
+    </main>
 
 </div>
 
 
-<!-- =======================================================
-     SETTINGS PANEL
-     ======================================================= -->
+<!-- ======================================================
+     STATUS
+     ====================================================== -->
 
-<section
-    class="panel"
-    id="settingsPanel">
+<footer class="statusbar">
 
-    <div class="panel-header">
+    <div class="status-left">
+        <span id="saveStatus">Saved</span>
+        <span id="wordCount">0 words</span>
+        <span id="charCount">0 characters</span>
+    </div>
 
-        <span>
-            Document settings
-        </span>
+    <div class="status-right">
+        <span id="readingTime">0 min read</span>
+        <span id="selectionInfo"></span>
+    </div>
+
+</footer>
+
+</div>
+
+
+<!-- ======================================================
+     FIND MODAL
+     ====================================================== -->
+
+<div class="modal-backdrop" id="findModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2>Find and replace</h2>
+
+            <button class="icon-btn" id="closeFind">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+
+            <label>
+                Find
+                <input
+                    id="findInput"
+                    type="text"
+                    style="
+                        width:100%;
+                        margin-top:7px;
+                        padding:11px;
+                        border:1px solid #dfe3e8;
+                        border-radius:9px;
+                    "
+                >
+            </label>
+
+            <br>
+
+            <label>
+                Replace with
+                <input
+                    id="replaceInput"
+                    type="text"
+                    style="
+                        width:100%;
+                        margin-top:7px;
+                        padding:11px;
+                        border:1px solid #dfe3e8;
+                        border-radius:9px;
+                    "
+                >
+            </label>
+
+        </div>
+
+        <div class="modal-actions">
+
+            <button class="secondary-btn" id="findNext">
+                Find next
+            </button>
+
+            <button class="secondary-btn" id="replaceOne">
+                Replace
+            </button>
+
+            <button class="primary-btn" id="replaceAll">
+                Replace all
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     EQUATION MODAL
+     ====================================================== -->
+
+<div class="modal-backdrop" id="equationModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h2>Insert equation</h2>
+
+            <button class="icon-btn" id="closeEquation">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <p style="color:#6b7280;font-size:13px">
+                Type an equation or mathematical expression.
+            </p>
+
+            <input
+                id="equationInput"
+                type="text"
+                placeholder="x² + y² = z²"
+                style="
+                    width:100%;
+                    padding:14px;
+                    font-family:'Roboto Mono',monospace;
+                    border:1px solid #dfe3e8;
+                    border-radius:10px;
+                    font-size:16px;
+                    outline:none;
+                "
+            >
+
+        </div>
+
+        <div class="modal-actions">
+
+            <button class="secondary-btn" id="cancelEquation">
+                Cancel
+            </button>
+
+            <button class="primary-btn" id="insertEquation">
+                Insert equation
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     PRESENTATION
+     ====================================================== -->
+
+<div class="presentation" id="presentation">
+
+    <div class="presentation-title" id="presentationTitle">
+        Untitled document
+    </div>
+
+    <div class="presentation-help">
+        Esc to exit
+    </div>
+
+    <div class="presentation-stage">
+
+        <div class="presentation-page" id="presentationPage">
+
+            <div
+                class="document-content"
+                id="presentationContent"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <canvas id="annotationCanvas"></canvas>
+
+
+    <div class="presentation-toolbar">
 
         <button
-            class="icon-button"
-            onclick="toggleSettings()">
+            class="present-btn"
+            id="exitPresentation"
+            title="Exit presentation"
+        >
+            <span class="material-symbols-outlined">close_fullscreen</span>
+        </button>
 
-            <span class="material-symbols-outlined">
-                close
-            </span>
 
+        <button
+            class="present-btn"
+            id="prevPresentation"
+            title="Previous"
+        >
+            <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+
+
+        <button
+            class="present-btn"
+            id="nextPresentation"
+            title="Next"
+        >
+            <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+
+        <button
+            class="present-btn"
+            id="penTool"
+            title="Pen"
+        >
+            <span class="material-symbols-outlined">edit</span>
+        </button>
+
+
+        <button
+            class="present-btn"
+            id="highlighterTool"
+            title="Highlighter"
+        >
+            <span class="material-symbols-outlined">ink_highlighter</span>
+        </button>
+
+
+        <button
+            class="present-btn"
+            id="eraserTool"
+            title="Eraser"
+        >
+            <span class="material-symbols-outlined">ink_eraser</span>
+        </button>
+
+
+        <button
+            class="present-btn"
+            id="clearAnnotations"
+            title="Clear annotations"
+        >
+            <span class="material-symbols-outlined">delete_sweep</span>
+        </button>
+
+
+        <input
+            class="present-color"
+            id="annotationColor"
+            type="color"
+            value="#ff3b30"
+            title="Annotation colour"
+        >
+
+
+        <input
+            class="present-size"
+            id="annotationSize"
+            type="range"
+            min="2"
+            max="30"
+            value="5"
+            title="Pen size"
+        >
+
+
+        <button
+            class="present-btn"
+            id="presentationFullscreen"
+            title="Fullscreen"
+        >
+            <span class="material-symbols-outlined">fullscreen</span>
         </button>
 
     </div>
 
-    <div class="panel-body">
+</div>
 
-        <div class="setting">
 
-            <label>
-                Paper
-            </label>
+<input
+    id="fileInput"
+    type="file"
+    multiple
+    accept="image/*,.txt,.html,.htm,.md,.json"
+    hidden
+>
 
-            <div class="setting-row">
 
-                <span>
-                    Ruled lines
-                </span>
-
-                <div
-                    class="switch"
-                    id="linesSwitch"
-                    onclick="toggleRuled()">
-
-                    <span></span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="setting">
-
-            <div class="setting-row">
-
-                <span>
-                    Maths grid
-                </span>
-
-                <div
-                    class="switch"
-                    id="gridSwitch"
-                    onclick="toggleMathGrid()">
-
-                    <span></span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="setting">
-
-            <div class="setting-row">
-
-                <span>
-                    Newspaper layout
-                </span>
-
-                <div
-                    class="switch"
-                    id="newspaperSwitch"
-                    onclick="toggleNewspaper()">
-
-                    <span></span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="setting">
-
-            <div class="setting-row">
-
-                <span>
-                    Dark editor
-                </span>
-
-                <div
-                    class="switch"
-                    id="darkSwitch"
-                    onclick="toggleDark()">
-
-                    <span></span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="setting">
-
-            <div class="setting-row">
-
-                <span>
-                    Focus mode
-                </span>
-
-                <div
-                    class="switch"
-                    id="focusSwitch"
-                    onclick="toggleFocus()">
-
-                    <span></span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <hr>
-
-
-        <div class="setting">
-
-            <label>
-                Paper size
-            </label>
-
-            <select
-                class="select"
-                style="width:100%"
-                onchange="changePaperSize(this.value)">
-
-                <option value="A4">
-                    A4
-                </option>
-
-                <option value="Letter">
-                    Letter
-                </option>
-
-                <option value="A5">
-                    A5
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="setting">
-
-            <label>
-                Export
-            </label>
-
-            <div style="
-                display:grid;
-                grid-template-columns:1fr 1fr;
-                gap:8px;
-            ">
-
-                <button
-                    class="primary-button"
-                    onclick="exportHTML()">
-
-                    HTML
-
-                </button>
-
-                <button
-                    class="primary-button"
-                    onclick="exportTXT()">
-
-                    TXT
-
-                </button>
-
-                <button
-                    class="primary-button"
-                    onclick="window.print()">
-
-                    PDF / Print
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =======================================================
-     STATUS BAR
-     ======================================================= -->
-
-<footer class="statusbar">
-
-    <span id="saveStatus">
-        Saved
-    </span>
-
-    <span id="pageStatus">
-        Page 1
-    </span>
-
-    <div class="status-right">
-
-        <span id="wordCount">
-            0 words
-        </span>
-
-        <span id="charCount">
-            0 characters
-        </span>
-
-        <span id="readingTime">
-            0 min read
-        </span>
-
-    </div>
-
-</footer>
+<div class="toast" id="toast"></div>
 
 
 <script>
 
 /* =========================================================
-   DOCBIRD EDITOR ENGINE
+   DOCBIRD EDITOR JAVASCRIPT
    ========================================================= */
 
-const page =
-    document.getElementById("documentPage");
+const editor = document.getElementById("editor");
+const documentPage = document.getElementById("documentPage");
+const documentTitle = document.getElementById("documentTitle");
+const saveStatus = document.getElementById("saveStatus");
 
-const article =
-    document.getElementById("articleContent");
+const STORAGE_KEY = "docbird_docs";
+const CURRENT_KEY = "docbird_current_document";
 
-const titleInput =
-    document.getElementById("documentTitle");
+let currentDocumentId = null;
+let savedRange = null;
+let saveTimer = null;
+let zoom = 1;
 
-let currentDocId =
-    localStorage.getItem("currentDoc");
 
-let zoom =
-    1;
+/* =========================================================
+   UTILITIES
+   ========================================================= */
 
-let savedSelection =
-    null;
+function $(id){
+    return document.getElementById(id);
+}
+
+function showToast(message){
+
+    const toast = $("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toast._timer);
+
+    toast._timer = setTimeout(()=>{
+        toast.classList.remove("show");
+    },2200);
+}
+
+
+function escapeHTML(text){
+
+    return text
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
 
 
 /* =========================================================
@@ -2249,7 +1912,7 @@ function getDocuments(){
     try{
 
         return JSON.parse(
-            localStorage.getItem("docbird_docs") || "[]"
+            localStorage.getItem(STORAGE_KEY) || "[]"
         );
 
     }catch{
@@ -2261,337 +1924,315 @@ function getDocuments(){
 }
 
 
-function saveDocuments(docs){
+function saveDocuments(documents){
 
     localStorage.setItem(
-        "docbird_docs",
-        JSON.stringify(docs)
+        STORAGE_KEY,
+        JSON.stringify(documents)
     );
 
 }
 
 
-/* =========================================================
-   LOAD DOCUMENT
-   ========================================================= */
+function createDocument(){
 
-function loadDocument(){
+    currentDocumentId =
+        "doc_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .slice(2,8);
 
-    const docs =
-        getDocuments();
+    const doc = {
 
-    if(!currentDocId){
+        id:currentDocumentId,
 
-        currentDocId =
-            String(Date.now());
+        title:"Untitled document",
 
-        localStorage.setItem(
-            "currentDoc",
-            currentDocId
-        );
+        content:editor.innerHTML,
 
-        docs.push({
+        updated:Date.now(),
 
-            id:currentDocId,
+        settings:getSettings()
 
-            title:"Untitled Document",
+    };
 
-            content:article.innerHTML,
+    const docs = getDocuments();
 
-            date:new Date().toLocaleString()
-
-        });
-
-        saveDocuments(docs);
-
-    }
-
-    const doc =
-        docs.find(
-            d=>String(d.id)===String(currentDocId)
-        );
-
-    if(doc){
-
-        titleInput.value =
-            doc.title || "Untitled Document";
-
-        article.innerHTML =
-            doc.content ||
-            "<p>Start writing...</p>";
-
-    }
-
-    updateStats();
-
-}
-
-
-loadDocument();
-
-
-/* =========================================================
-   SAVE
-   ========================================================= */
-
-function saveDocument(){
-
-    const docs =
-        getDocuments();
-
-    let doc =
-        docs.find(
-            d=>String(d.id)===String(currentDocId)
-        );
-
-    if(!doc){
-
-        doc = {
-
-            id:currentDocId,
-
-            title:"Untitled Document",
-
-            content:"",
-
-            date:""
-
-        };
-
-        docs.push(doc);
-
-    }
-
-    doc.title =
-        titleInput.value.trim()
-        || "Untitled Document";
-
-    doc.content =
-        article.innerHTML;
-
-    doc.date =
-        new Date().toLocaleString();
+    docs.unshift(doc);
 
     saveDocuments(docs);
 
-    document.getElementById("saveStatus")
-        .textContent="Saved";
+    localStorage.setItem(
+        CURRENT_KEY,
+        currentDocumentId
+    );
 
 }
 
 
-let saveTimer;
+function loadDocument(){
 
-function scheduleSave(){
+    const docs = getDocuments();
 
-    document.getElementById("saveStatus")
-        .textContent="Saving...";
+    const current =
+        localStorage.getItem(CURRENT_KEY);
+
+    let doc =
+        docs.find(d => d.id === current);
+
+    if(!doc){
+
+        if(docs.length){
+
+            doc = docs[0];
+
+            currentDocumentId = doc.id;
+
+        }else{
+
+            createDocument();
+
+            return;
+
+        }
+
+    }else{
+
+        currentDocumentId = doc.id;
+
+    }
+
+    documentTitle.value =
+        doc.title || "Untitled document";
+
+    editor.innerHTML =
+        doc.content || "<p></p>";
+
+    applySettings(
+        doc.settings || {}
+    );
+
+}
+
+
+function saveDocument(){
+
+    if(!currentDocumentId){
+
+        createDocument();
+
+    }
+
+    const docs = getDocuments();
+
+    const index =
+        docs.findIndex(
+            d => d.id === currentDocumentId
+        );
+
+    const doc = {
+
+        id:currentDocumentId,
+
+        title:
+            documentTitle.value.trim() ||
+            "Untitled document",
+
+        content:editor.innerHTML,
+
+        updated:Date.now(),
+
+        settings:getSettings()
+
+    };
+
+    if(index >= 0){
+
+        docs[index] = doc;
+
+    }else{
+
+        docs.unshift(doc);
+
+    }
+
+    saveDocuments(docs);
+
+    localStorage.setItem(
+        CURRENT_KEY,
+        currentDocumentId
+    );
+
+    saveStatus.textContent =
+        "Saved just now";
+
+    setTimeout(()=>{
+
+        saveStatus.textContent =
+            "Saved";
+
+    },1500);
+
+}
+
+
+function autoSave(){
+
+    saveStatus.textContent =
+        "Saving...";
 
     clearTimeout(saveTimer);
 
     saveTimer =
-        setTimeout(
-            saveDocument,
-            700
-        );
-
-}
-
-
-article.addEventListener(
-    "input",
-    ()=>{
-        updateStats();
-        scheduleSave();
-    }
-);
-
-
-titleInput.addEventListener(
-    "input",
-    scheduleSave
-);
-
-
-/* =========================================================
-   COMMAND SYSTEM
-   ========================================================= */
-
-function focusEditor(){
-
-    page.focus();
-
-}
-
-
-function runCommand(command,value=null){
-
-    focusEditor();
-
-    try{
-
-        document.execCommand(
-            command,
-            false,
-            value
-        );
-
-    }catch(e){
-
-        console.log(e);
-
-    }
-
-    updateToolbar();
-
-    updateStats();
-
-    scheduleSave();
+        setTimeout(saveDocument,500);
 
 }
 
 
 /* =========================================================
-   FORMAT
+   SETTINGS
    ========================================================= */
 
-function formatBlock(tag){
+function getSettings(){
 
-    focusEditor();
+    return {
 
-    document.execCommand(
-        "formatBlock",
-        false,
-        tag
+        ruled:
+            $("ruledSwitch").checked,
+
+        margin:
+            $("marginSwitch").checked,
+
+        grid:
+            $("gridSwitch").checked,
+
+        largeGrid:
+            $("largeGridSwitch").checked,
+
+        newspaper:
+            $("newspaperSwitch").checked,
+
+        dark:
+            $("darkSwitch").checked,
+
+        focus:
+            $("focusSwitch").checked,
+
+        header:
+            $("headerSwitch").checked,
+
+        footer:
+            $("footerSwitch").checked
+
+    };
+
+}
+
+
+function applySettings(settings){
+
+    $("ruledSwitch").checked =
+        !!settings.ruled;
+
+    $("marginSwitch").checked =
+        !!settings.margin;
+
+    $("gridSwitch").checked =
+        !!settings.grid;
+
+    $("largeGridSwitch").checked =
+        !!settings.largeGrid;
+
+    $("newspaperSwitch").checked =
+        !!settings.newspaper;
+
+    $("darkSwitch").checked =
+        !!settings.dark;
+
+    $("focusSwitch").checked =
+        !!settings.focus;
+
+    $("headerSwitch").checked =
+        settings.header !== false;
+
+    $("footerSwitch").checked =
+        settings.footer !== false;
+
+    updatePageModes();
+
+}
+
+
+function updatePageModes(){
+
+    documentPage.classList.toggle(
+        "ruled",
+        $("ruledSwitch").checked
     );
 
-    updateToolbar();
-
-    scheduleSave();
-
-}
-
-
-/* =========================================================
-   FONT
-   ========================================================= */
-
-function changeFont(font){
-
-    focusEditor();
-
-    document.execCommand(
-        "fontName",
-        false,
-        font
+    documentPage.classList.toggle(
+        "margin-line",
+        $("marginSwitch").checked
     );
 
-    scheduleSave();
-
-}
-
-
-function changeFontSize(size){
-
-    focusEditor();
-
-    document.execCommand(
-        "fontSize",
-        false,
-        size
+    documentPage.classList.toggle(
+        "math-grid",
+        $("gridSwitch").checked
     );
 
-    scheduleSave();
+    documentPage.classList.toggle(
+        "math-grid-large",
+        $("largeGridSwitch").checked
+    );
+
+    documentPage.classList.toggle(
+        "newspaper",
+        $("newspaperSwitch").checked
+    );
+
+    documentPage.classList.toggle(
+        "dark",
+        $("darkSwitch").checked
+    );
+
+    documentPage.classList.toggle(
+        "focus",
+        $("focusSwitch").checked
+    );
+
+    $("pageHeader").style.display =
+        $("headerSwitch").checked
+            ? ""
+            : "none";
+
+    $("pageFooter").style.display =
+        $("footerSwitch").checked
+            ? ""
+            : "none";
+
+    autoSave();
 
 }
 
 
 /* =========================================================
-   TEXT COLOUR
+   SELECTION HANDLING
    ========================================================= */
 
-const textColor =
-    document.getElementById("textColor");
-
-const highlightColor =
-    document.getElementById("highlightColor");
-
-
-function chooseTextColor(){
-
-    rememberSelection();
-
-    textColor.click();
-
-}
-
-
-textColor.addEventListener(
-    "input",
-    ()=>{
-
-        restoreSelection();
-
-        document.execCommand(
-            "foreColor",
-            false,
-            textColor.value
-        );
-
-        document.getElementById(
-            "textColorPreview"
-        ).style.background =
-            textColor.value;
-
-        scheduleSave();
-
-    }
-);
-
-
-function chooseHighlight(){
-
-    rememberSelection();
-
-    highlightColor.click();
-
-}
-
-
-highlightColor.addEventListener(
-    "input",
-    ()=>{
-
-        restoreSelection();
-
-        document.execCommand(
-            "hiliteColor",
-            false,
-            highlightColor.value
-        );
-
-        scheduleSave();
-
-    }
-);
-
-
-/* =========================================================
-   SELECTION
-   ========================================================= */
-
-function rememberSelection(){
+function saveSelection(){
 
     const selection =
         window.getSelection();
 
     if(
-        selection.rangeCount
-        &&
-        !selection.isCollapsed
+        selection &&
+        selection.rangeCount > 0 &&
+        editor.contains(selection.anchorNode)
     ){
 
-        savedSelection =
+        savedRange =
             selection.getRangeAt(0).cloneRange();
 
     }
@@ -2601,8 +2242,8 @@ function rememberSelection(){
 
 function restoreSelection(){
 
-    if(!savedSelection)
-        return;
+    if(!savedRange)
+        return false;
 
     const selection =
         window.getSelection();
@@ -2610,746 +2251,978 @@ function restoreSelection(){
     selection.removeAllRanges();
 
     selection.addRange(
-        savedSelection
+        savedRange
     );
 
-    focusEditor();
+    return true;
 
 }
+
+
+editor.addEventListener(
+    "mouseup",
+    saveSelection
+);
+
+editor.addEventListener(
+    "keyup",
+    saveSelection
+);
+
+editor.addEventListener(
+    "touchend",
+    saveSelection
+);
 
 
 /* =========================================================
-   LINKS
+   SELECTED TEXT FORMATTING
    ========================================================= */
 
-function insertLink(){
+function wrapSelectedText(styles){
 
-    rememberSelection();
+    if(!restoreSelection()){
 
-    const url =
-        prompt(
-            "Enter the web address:"
+        showToast(
+            "Select some text first"
         );
 
-    if(!url)
-        return;
+        return false;
 
-    restoreSelection();
+    }
 
-    document.execCommand(
-        "createLink",
-        false,
-        url
+    const selection =
+        window.getSelection();
+
+    if(
+        selection.rangeCount === 0 ||
+        selection.isCollapsed
+    ){
+
+        showToast(
+            "Select some text first"
+        );
+
+        return false;
+
+    }
+
+    const range =
+        selection.getRangeAt(0);
+
+    const span =
+        document.createElement("span");
+
+    Object.assign(
+        span.style,
+        styles
     );
 
-    scheduleSave();
+    try{
+
+        const contents =
+            range.extractContents();
+
+        span.appendChild(contents);
+
+        range.insertNode(span);
+
+        selection.removeAllRanges();
+
+        const newRange =
+            document.createRange();
+
+        newRange.selectNodeContents(span);
+
+        selection.addRange(newRange);
+
+        savedRange =
+            newRange.cloneRange();
+
+        editor.focus();
+
+        autoSave();
+
+        return true;
+
+    }catch(error){
+
+        console.error(error);
+
+        return false;
+
+    }
 
 }
+
+
+/* FONT */
+
+$("fontSelect").addEventListener(
+    "change",
+    function(){
+
+        const font =
+            this.value;
+
+        const applied =
+            wrapSelectedText({
+
+                fontFamily:
+                    `"${font}", sans-serif`
+
+            });
+
+        if(applied){
+
+            showToast(
+                font +
+                " applied to selected text"
+            );
+
+        }else{
+
+            this.value = "Inter";
+
+        }
+
+    }
+);
+
+
+/* SIZE */
+
+$("sizeSelect").addEventListener(
+    "change",
+    function(){
+
+        const size =
+            this.value;
+
+        const applied =
+            wrapSelectedText({
+
+                fontSize:size
+
+            });
+
+        if(applied){
+
+            showToast(
+                size +
+                " applied to selected text"
+            );
+
+        }else{
+
+            this.value = "16px";
+
+        }
+
+    }
+);
 
 
 /* =========================================================
-   IMAGE
+   BASIC COMMANDS
    ========================================================= */
 
-function insertImage(){
+document
+    .querySelectorAll("[data-command]")
+    .forEach(button => {
 
-    rememberSelection();
-
-    const url =
-        prompt(
-            "Enter an image URL:"
+        button.addEventListener(
+            "mousedown",
+            e => e.preventDefault()
         );
 
-    if(!url)
-        return;
+        button.addEventListener(
+            "click",
+            ()=>{
 
-    restoreSelection();
+                editor.focus();
+
+                document.execCommand(
+                    button.dataset.command,
+                    false,
+                    null
+                );
+
+                updateToolbarStates();
+
+                autoSave();
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   FORMAT
+   ========================================================= */
+
+$("formatSelect").addEventListener(
+    "change",
+    function(){
+
+        editor.focus();
+
+        document.execCommand(
+            "formatBlock",
+            false,
+            this.value
+        );
+
+        autoSave();
+
+    }
+);
+
+
+/* =========================================================
+   TEXT COLOUR
+   ========================================================= */
+
+$("textColorButton").addEventListener(
+    "click",
+    ()=>{
+        $("textColor").click();
+    }
+);
+
+$("textColor").addEventListener(
+    "change",
+    function(){
+
+        wrapSelectedText({
+
+            color:this.value
+
+        });
+
+        $("textColorPreview")
+            .style.background =
+            this.value;
+
+    }
+);
+
+
+/* =========================================================
+   HIGHLIGHT
+   ========================================================= */
+
+$("highlightButton").addEventListener(
+    "click",
+    ()=>{
+        $("highlightColor").click();
+    }
+);
+
+$("highlightColor").addEventListener(
+    "change",
+    function(){
+
+        const applied =
+            wrapSelectedText({
+
+                backgroundColor:this.value
+
+            });
+
+        $("highlightPreview")
+            .style.background =
+            this.value;
+
+    }
+);
+
+
+/* =========================================================
+   CLEAR FORMAT
+   ========================================================= */
+
+$("clearFormatBtn").addEventListener(
+    "click",
+    ()=>{
+
+        if(!restoreSelection())
+            return;
+
+        document.execCommand(
+            "removeFormat",
+            false,
+            null
+        );
+
+        autoSave();
+
+    }
+);
+
+
+/* =========================================================
+   UNDO / REDO
+   ========================================================= */
+
+function undo(){
+
+    editor.focus();
 
     document.execCommand(
-        "insertImage",
-        false,
-        url
+        "undo"
     );
 
-    scheduleSave();
+    autoSave();
 
 }
+
+function redo(){
+
+    editor.focus();
+
+    document.execCommand(
+        "redo"
+    );
+
+    autoSave();
+
+}
+
+$("undoBtn").onclick = undo;
+$("toolbarUndo").onclick = undo;
+
+$("redoBtn").onclick = redo;
+$("toolbarRedo").onclick = redo;
+
+
+/* =========================================================
+   LINK
+   ========================================================= */
+
+$("linkBtn").addEventListener(
+    "click",
+    ()=>{
+
+        const url =
+            prompt(
+                "Enter the website address:"
+            );
+
+        if(!url)
+            return;
+
+        if(!restoreSelection())
+            return;
+
+        document.execCommand(
+            "createLink",
+            false,
+            url
+        );
+
+        autoSave();
+
+    }
+);
+
+
+/* =========================================================
+   IMAGE URL
+   ========================================================= */
+
+$("imageBtn").addEventListener(
+    "click",
+    ()=>{
+
+        const url =
+            prompt(
+                "Enter an image URL:"
+            );
+
+        if(!url)
+            return;
+
+        if(!restoreSelection())
+            return;
+
+        const img =
+            document.createElement("img");
+
+        img.src = url;
+
+        img.alt =
+            "Document image";
+
+        const selection =
+            window.getSelection();
+
+        if(selection.rangeCount){
+
+            const range =
+                selection.getRangeAt(0);
+
+            range.insertNode(img);
+
+        }
+
+        autoSave();
+
+    }
+);
 
 
 /* =========================================================
    TABLE
    ========================================================= */
 
-function insertTable(){
+$("tableBtn").addEventListener(
+    "click",
+    ()=>{
 
-    rememberSelection();
-
-    const rows =
-        Math.max(
-            1,
+        let rows =
             parseInt(
                 prompt(
                     "Number of rows:",
                     "3"
                 )
-            ) || 3
-        );
+            );
 
-    const cols =
-        Math.max(
-            1,
+        let cols =
             parseInt(
                 prompt(
                     "Number of columns:",
                     "3"
                 )
-            ) || 3
-        );
+            );
 
-    restoreSelection();
+        if(
+            !rows ||
+            !cols ||
+            rows < 1 ||
+            cols < 1 ||
+            rows > 20 ||
+            cols > 20
+        ){
 
-    let html =
-        "<table><tbody>";
-
-    for(let r=0;r<rows;r++){
-
-        html += "<tr>";
-
-        for(let c=0;c<cols;c++){
-
-            html +=
-                r===0
-                ? "<th>Header</th>"
-                : "<td>Cell</td>";
+            return;
 
         }
 
-        html += "</tr>";
+        let html =
+            "<table><tbody>";
+
+        for(let r=0;r<rows;r++){
+
+            html += "<tr>";
+
+            for(let c=0;c<cols;c++){
+
+                html +=
+                    r === 0
+                        ? "<th>Heading</th>"
+                        : "<td>Cell</td>";
+
+            }
+
+            html += "</tr>";
+
+        }
+
+        html +=
+            "</tbody></table>";
+
+        insertHTMLAtSelection(html);
+
+    }
+);
+
+
+/* =========================================================
+   INSERT HTML
+   ========================================================= */
+
+function insertHTMLAtSelection(html){
+
+    editor.focus();
+
+    if(!restoreSelection())
+        return;
+
+    const selection =
+        window.getSelection();
+
+    if(!selection.rangeCount)
+        return;
+
+    const range =
+        selection.getRangeAt(0);
+
+    const temp =
+        document.createElement("div");
+
+    temp.innerHTML = html;
+
+    const fragment =
+        document.createDocumentFragment();
+
+    while(temp.firstChild){
+
+        fragment.appendChild(
+            temp.firstChild
+        );
 
     }
 
-    html +=
-        "</tbody></table><p><br></p>";
+    range.deleteContents();
 
-    document.execCommand(
-        "insertHTML",
-        false,
-        html
-    );
+    range.insertNode(fragment);
 
-    scheduleSave();
+    selection.removeAllRanges();
+
+    autoSave();
 
 }
+
+
+/* =========================================================
+   HORIZONTAL LINE
+   ========================================================= */
+
+$("lineBtn").addEventListener(
+    "click",
+    ()=>{
+
+        insertHTMLAtSelection(
+            "<hr>"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   PAGE BREAK
+   ========================================================= */
+
+$("pageBreakBtn").addEventListener(
+    "click",
+    ()=>{
+
+        insertHTMLAtSelection(
+            `
+            <div
+                style="
+                    page-break-after:always;
+                    break-after:page;
+                    height:1px;
+                "
+            ></div>
+            `
+        );
+
+        showToast(
+            "Page break inserted"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   CALLOUT
+   ========================================================= */
+
+$("calloutBtn").addEventListener(
+    "click",
+    ()=>{
+
+        insertHTMLAtSelection(
+            `
+            <div class="callout">
+                <strong>Important</strong>
+                <br>
+                Type your note here.
+            </div>
+            `
+        );
+
+    }
+);
 
 
 /* =========================================================
    MATHS SQUARE
    ========================================================= */
 
-function insertMathSquare(){
+$("mathSquareBtn").addEventListener(
+    "click",
+    ()=>{
 
-    rememberSelection();
-
-    const value =
-        prompt(
-            "Enter the maths value:",
-            "□"
+        insertHTMLAtSelection(
+            `
+            <span
+                class="math-square"
+                contenteditable="true"
+            >□</span>
+            `
         );
 
-    if(value===null)
-        return;
-
-    restoreSelection();
-
-    const html = `
-
-        <span
-            class="math-block"
-            contenteditable="true">
-
-            ${escapeHTML(value)}
-
-        </span>&nbsp;
-
-    `;
-
-    document.execCommand(
-        "insertHTML",
-        false,
-        html
-    );
-
-    scheduleSave();
-
-}
-
-
-/* =========================================================
-   FRACTION
-   ========================================================= */
-
-function insertFraction(){
-
-    rememberSelection();
-
-    const top =
-        prompt(
-            "Numerator:",
-            "1"
+        showToast(
+            "Maths square inserted"
         );
 
-    if(top===null)
-        return;
-
-    const bottom =
-        prompt(
-            "Denominator:",
-            "2"
-        );
-
-    if(bottom===null)
-        return;
-
-    restoreSelection();
-
-    const html = `
-
-        <span
-            class="math-block"
-            contenteditable="true">
-
-            <span class="math-fraction">
-
-                <span class="top">
-                    ${escapeHTML(top)}
-                </span>
-
-                <span class="bottom">
-                    ${escapeHTML(bottom)}
-                </span>
-
-            </span>
-
-        </span>&nbsp;
-
-    `;
-
-    document.execCommand(
-        "insertHTML",
-        false,
-        html
-    );
-
-    scheduleSave();
-
-}
+    }
+);
 
 
 /* =========================================================
    EQUATION
    ========================================================= */
 
-function insertEquation(){
+$("equationBtn").addEventListener(
+    "click",
+    ()=>{
 
-    rememberSelection();
+        $("equationModal")
+            .classList.add("show");
 
-    const equation =
-        prompt(
-            "Enter an equation:",
-            "x² + y² = z²"
+        $("equationInput")
+            .focus();
+
+    }
+);
+
+function closeEquation(){
+
+    $("equationModal")
+        .classList.remove("show");
+
+}
+
+$("closeEquation").onclick =
+    closeEquation;
+
+$("cancelEquation").onclick =
+    closeEquation;
+
+
+$("insertEquation").onclick =
+    ()=>{
+
+        const value =
+            $("equationInput")
+                .value
+                .trim();
+
+        if(!value)
+            return;
+
+        insertHTMLAtSelection(
+            `
+            <div
+                class="math-equation"
+                contenteditable="true"
+            >
+                ${escapeHTML(value)}
+            </div>
+            `
         );
 
-    if(equation===null)
+        $("equationInput").value = "";
+
+        closeEquation();
+
+    };
+
+
+/* =========================================================
+   FIND / REPLACE
+   ========================================================= */
+
+$("findBtn").onclick =
+    ()=>{
+        $("findModal")
+            .classList.add("show");
+
+        $("findInput").focus();
+    };
+
+
+$("closeFind").onclick =
+    ()=>{
+        $("findModal")
+            .classList.remove("show");
+    };
+
+
+$("findNext").onclick =
+    ()=>{
+
+        const query =
+            $("findInput").value;
+
+        if(!query)
+            return;
+
+        const selection =
+            window.getSelection();
+
+        const range =
+            document.createRange();
+
+        const walker =
+            document.createTreeWalker(
+                editor,
+                NodeFilter.SHOW_TEXT
+            );
+
+        let node;
+
+        while(node = walker.nextNode()){
+
+            const index =
+                node.textContent
+                    .toLowerCase()
+                    .indexOf(
+                        query.toLowerCase()
+                    );
+
+            if(index !== -1){
+
+                range.setStart(
+                    node,
+                    index
+                );
+
+                range.setEnd(
+                    node,
+                    index + query.length
+                );
+
+                selection.removeAllRanges();
+
+                selection.addRange(range);
+
+                savedRange =
+                    range.cloneRange();
+
+                return;
+
+            }
+
+        }
+
+        showToast("No results found");
+
+    };
+
+
+$("replaceOne").onclick =
+    ()=>{
+
+        if(!restoreSelection())
+            return;
+
+        const replacement =
+            $("replaceInput").value;
+
+        const selection =
+            window.getSelection();
+
+        if(
+            selection.rangeCount &&
+            !selection.isCollapsed
+        ){
+
+            document.execCommand(
+                "insertText",
+                false,
+                replacement
+            );
+
+            autoSave();
+
+        }
+
+    };
+
+
+$("replaceAll").onclick =
+    ()=>{
+
+        const find =
+            $("findInput").value;
+
+        const replace =
+            $("replaceInput").value;
+
+        if(!find)
+            return;
+
+        const walker =
+            document.createTreeWalker(
+                editor,
+                NodeFilter.SHOW_TEXT
+            );
+
+        const nodes = [];
+
+        let node;
+
+        while(node = walker.nextNode()){
+            nodes.push(node);
+        }
+
+        nodes.forEach(node=>{
+
+            node.textContent =
+                node.textContent.split(find).join(replace);
+
+        });
+
+        autoSave();
+
+        showToast(
+            "All matches replaced"
+        );
+
+    };
+
+
+/* =========================================================
+   FILE UPLOADS
+   ========================================================= */
+
+$("uploadBtn").onclick =
+    ()=>{
+        $("fileInput").click();
+    };
+
+
+$("fileInput").addEventListener(
+    "change",
+    async function(){
+
+        const files =
+            Array.from(this.files);
+
+        for(const file of files){
+
+            await importFile(file);
+
+        }
+
+        this.value = "";
+
+    }
+);
+
+
+async function importFile(file){
+
+    if(file.type.startsWith("image/")){
+
+        const reader =
+            new FileReader();
+
+        reader.onload = ()=>{
+
+            insertHTMLAtSelection(
+                `
+                <img
+                    src="${reader.result}"
+                    alt="${escapeHTML(file.name)}"
+                >
+                `
+            );
+
+            showToast(
+                file.name +
+                " inserted"
+            );
+
+        };
+
+        reader.readAsDataURL(file);
+
         return;
 
-    restoreSelection();
-
-    const html = `
-
-        <span
-            class="math-block"
-            contenteditable="true">
-
-            ${escapeHTML(equation)}
-
-        </span>&nbsp;
-
-    `;
-
-    document.execCommand(
-        "insertHTML",
-        false,
-        html
-    );
-
-    scheduleSave();
-
-}
-
-
-/* =========================================================
-   HTML ESCAPE
-   ========================================================= */
-
-function escapeHTML(text){
-
-    return String(text)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-
-}
-
-
-/* =========================================================
-   RULED PAPER
-   ========================================================= */
-
-function toggleRuled(){
-
-    page.classList.toggle(
-        "ruled"
-    );
-
-    page.classList.toggle(
-        "margin-line",
-        page.classList.contains("ruled")
-    );
-
-    const on =
-        page.classList.contains("ruled");
-
-    document.getElementById(
-        "linesButton"
-    ).classList.toggle(
-        "active",
-        on
-    );
-
-    setSwitch(
-        "linesSwitch",
-        on
-    );
-
-    saveViewState();
-
-}
-
-
-/* =========================================================
-   MATH GRID
-   ========================================================= */
-
-function toggleMathGrid(){
-
-    page.classList.toggle(
-        "math-grid"
-    );
-
-    const on =
-        page.classList.contains(
-            "math-grid"
-        );
-
-    document.getElementById(
-        "gridButton"
-    ).classList.toggle(
-        "active",
-        on
-    );
-
-    setSwitch(
-        "gridSwitch",
-        on
-    );
-
-    saveViewState();
-
-}
-
-
-/* =========================================================
-   NEWSPAPER
-   ========================================================= */
-
-function toggleNewspaper(){
-
-    page.classList.toggle(
-        "newspaper"
-    );
-
-    const on =
-        page.classList.contains(
-            "newspaper"
-        );
-
-    document.getElementById(
-        "newspaperButton"
-    ).classList.toggle(
-        "active",
-        on
-    );
-
-    setSwitch(
-        "newspaperSwitch",
-        on
-    );
-
-    saveViewState();
-
-}
-
-
-/* =========================================================
-   DARK
-   ========================================================= */
-
-function toggleDark(){
-
-    document.body.classList.toggle(
-        "dark-editor"
-    );
-
-    const on =
-        document.body.classList.contains(
-            "dark-editor"
-        );
-
-    document.getElementById(
-        "darkButton"
-    ).classList.toggle(
-        "active",
-        on
-    );
-
-    setSwitch(
-        "darkSwitch",
-        on
-    );
-
-    localStorage.setItem(
-        "docbird_dark",
-        on
-    );
-
-}
-
-
-/* =========================================================
-   FOCUS
-   ========================================================= */
-
-function toggleFocus(){
-
-    document.body.classList.toggle(
-        "focus-mode"
-    );
-
-    const on =
-        document.body.classList.contains(
-            "focus-mode"
-        );
-
-    document.getElementById(
-        "focusButton"
-    ).classList.toggle(
-        "active",
-        on
-    );
-
-    setSwitch(
-        "focusSwitch",
-        on
-    );
-
-}
-
-
-/* =========================================================
-   SWITCH UI
-   ========================================================= */
-
-function setSwitch(id,on){
-
-    const element =
-        document.getElementById(id);
-
-    if(element){
-
-        element.classList.toggle(
-            "on",
-            on
-        );
-
     }
 
-}
 
+    const text =
+        await file.text();
 
-/* =========================================================
-   VIEW STATE
-   ========================================================= */
-
-function saveViewState(){
-
-    localStorage.setItem(
-        "docbird_ruled",
-        page.classList.contains("ruled")
-    );
-
-    localStorage.setItem(
-        "docbird_grid",
-        page.classList.contains("math-grid")
-    );
-
-    localStorage.setItem(
-        "docbird_newspaper",
-        page.classList.contains("newspaper")
-    );
-
-}
-
-
-/* =========================================================
-   LOAD VIEW STATE
-   ========================================================= */
-
-function loadViewState(){
+    let html = "";
 
     if(
-        localStorage.getItem(
-            "docbird_ruled"
-        )==="true"
+        file.name.endsWith(".html") ||
+        file.name.endsWith(".htm")
     ){
 
-        page.classList.add(
-            "ruled",
-            "margin-line"
-        );
+        const parser =
+            new DOMParser();
 
-    }
+        const parsed =
+            parser.parseFromString(
+                text,
+                "text/html"
+            );
 
-    if(
-        localStorage.getItem(
-            "docbird_grid"
-        )==="true"
-    ){
-
-        page.classList.add(
-            "math-grid"
-        );
-
-    }
-
-    if(
-        localStorage.getItem(
-            "docbird_newspaper"
-        )==="true"
-    ){
-
-        page.classList.add(
-            "newspaper"
-        );
-
-    }
-
-    if(
-        localStorage.getItem(
-            "docbird_dark"
-        )==="true"
-    ){
-
-        document.body.classList.add(
-            "dark-editor"
-        );
-
-    }
-
-    updateAllSwitches();
-
-}
-
-
-function updateAllSwitches(){
-
-    const ruled =
-        page.classList.contains("ruled");
-
-    const grid =
-        page.classList.contains("math-grid");
-
-    const newspaper =
-        page.classList.contains("newspaper");
-
-    const dark =
-        document.body.classList.contains(
-            "dark-editor"
-        );
-
-    const focus =
-        document.body.classList.contains(
-            "focus-mode"
-        );
-
-    document.getElementById(
-        "linesButton"
-    ).classList.toggle(
-        "active",
-        ruled
-    );
-
-    document.getElementById(
-        "gridButton"
-    ).classList.toggle(
-        "active",
-        grid
-    );
-
-    document.getElementById(
-        "newspaperButton"
-    ).classList.toggle(
-        "active",
-        newspaper
-    );
-
-    document.getElementById(
-        "darkButton"
-    ).classList.toggle(
-        "active",
-        dark
-    );
-
-    document.getElementById(
-        "focusButton"
-    ).classList.toggle(
-        "active",
-        focus
-    );
-
-    setSwitch(
-        "linesSwitch",
-        ruled
-    );
-
-    setSwitch(
-        "gridSwitch",
-        grid
-    );
-
-    setSwitch(
-        "newspaperSwitch",
-        newspaper
-    );
-
-    setSwitch(
-        "darkSwitch",
-        dark
-    );
-
-    setSwitch(
-        "focusSwitch",
-        focus
-    );
-
-}
-
-
-loadViewState();
-
-
-/* =========================================================
-   ZOOM
-   ========================================================= */
-
-function changeZoom(amount){
-
-    zoom =
-        Math.max(
-            .5,
-            Math.min(
-                2,
-                zoom + amount
+        parsed
+            .querySelectorAll(
+                "script,style,iframe,object,embed"
             )
-        );
+            .forEach(el=>el.remove());
 
-    document.documentElement
-        .style
-        .setProperty(
-            "--zoom",
-            zoom
-        );
+        parsed
+            .querySelectorAll("*")
+            .forEach(el=>{
 
-    document.getElementById(
-        "zoomLabel"
-    ).textContent =
-        Math.round(
-            zoom * 100
-        ) + "%";
+                [...el.attributes]
+                    .forEach(attr=>{
 
-}
+                        if(
+                            attr.name
+                                .toLowerCase()
+                                .startsWith("on")
+                        ){
 
+                            el.removeAttribute(
+                                attr.name
+                            );
 
-/* =========================================================
-   PAPER SIZE
-   ========================================================= */
+                        }
 
-function changePaperSize(size){
+                    });
 
-    if(size==="A4"){
+            });
 
-        document.documentElement
-            .style
-            .setProperty(
-                "--page-width",
-                "850px"
-            );
+        html =
+            parsed.body
+                ? parsed.body.innerHTML
+                : escapeHTML(text);
 
-        document.documentElement
-            .style
-            .setProperty(
-                "--page-height",
-                "1100px"
-            );
+    }else{
 
-    }
-
-    if(size==="Letter"){
-
-        document.documentElement
-            .style
-            .setProperty(
-                "--page-width",
-                "850px"
-            );
-
-        document.documentElement
-            .style
-            .setProperty(
-                "--page-height",
-                "1095px"
-            );
+        html =
+            text
+                .split(/\r?\n/)
+                .map(line =>
+                    `<p>${escapeHTML(line) || "&nbsp;"}</p>`
+                )
+                .join("");
 
     }
 
-    if(size==="A5"){
+    insertHTMLAtSelection(html);
 
-        document.documentElement
-            .style
-            .setProperty(
-                "--page-width",
-                "600px"
-            );
-
-        document.documentElement
-            .style
-            .setProperty(
-                "--page-height",
-                "850px"
-            );
-
-    }
+    showToast(
+        file.name +
+        " imported"
+    );
 
 }
 
@@ -3358,175 +3231,748 @@ function changePaperSize(size){
    SETTINGS
    ========================================================= */
 
-function toggleSettings(){
+$("settingsBtn").onclick =
+    ()=>{
+        $("sidePanel")
+            .classList.add("open");
+    };
 
-    document.getElementById(
-        "settingsPanel"
-    ).classList.toggle(
-        "open"
+
+$("closeSettings").onclick =
+    ()=>{
+        $("sidePanel")
+            .classList.remove("open");
+    };
+
+
+[
+    "ruledSwitch",
+    "marginSwitch",
+    "gridSwitch",
+    "largeGridSwitch",
+    "newspaperSwitch",
+    "darkSwitch",
+    "focusSwitch",
+    "headerSwitch",
+    "footerSwitch"
+].forEach(id=>{
+
+    $(id).addEventListener(
+        "change",
+        updatePageModes
     );
+
+});
+
+
+/* =========================================================
+   ZOOM
+   ========================================================= */
+
+function updateZoom(){
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--zoom",
+            zoom
+        );
+
+    $("zoomLabel").textContent =
+        Math.round(zoom * 100) +
+        "%";
 
 }
 
 
+$("zoomInBtn").onclick =
+    ()=>{
+
+        zoom =
+            Math.min(
+                1.8,
+                zoom + .1
+            );
+
+        updateZoom();
+
+    };
+
+
+$("zoomOutBtn").onclick =
+    ()=>{
+
+        zoom =
+            Math.max(
+                .5,
+                zoom - .1
+            );
+
+        updateZoom();
+
+    };
+
+
+$("zoomLabel").onclick =
+    ()=>{
+
+        zoom = 1;
+
+        updateZoom();
+
+    };
+
+
 /* =========================================================
-   FIND
+   FULLSCREEN EDITOR
    ========================================================= */
 
-function toggleFind(){
+$("fullscreenBtn").onclick =
+    async ()=>{
 
-    document.getElementById(
-        "findBar"
-    ).classList.toggle(
-        "open"
-    );
+        try{
+
+            if(!document.fullscreenElement){
+
+                await document.documentElement
+                    .requestFullscreen();
+
+            }else{
+
+                await document.exitFullscreen();
+
+            }
+
+        }catch(error){
+
+            console.log(error);
+
+        }
+
+    };
+
+
+/* =========================================================
+   PRESENTATION MODE
+   ========================================================= */
+
+const presentation =
+    $("presentation");
+
+const presentationPage =
+    $("presentationPage");
+
+const presentationContent =
+    $("presentationContent");
+
+function startPresentation(){
+
+    presentationContent.innerHTML =
+        editor.innerHTML;
+
+    presentationPage.className =
+        "presentation-page";
 
     if(
-        document.getElementById(
-            "findBar"
-        ).classList.contains("open")
+        $("ruledSwitch").checked
     ){
 
-        document.getElementById(
-            "findInput"
-        ).focus();
-
-    }
-
-}
-
-
-function findNext(){
-
-    const term =
-        document.getElementById(
-            "findInput"
-        ).value;
-
-    if(!term)
-        return;
-
-    const walker =
-        document.createTreeWalker(
-            article,
-            NodeFilter.SHOW_TEXT
+        presentationPage.classList.add(
+            "ruled"
         );
 
-    let node;
-
-    while(node=walker.nextNode()){
-
-        const index =
-            node.textContent
-                .toLowerCase()
-                .indexOf(
-                    term.toLowerCase()
-                );
-
-        if(index!==-1){
-
-            const range =
-                document.createRange();
-
-            range.setStart(
-                node,
-                index
-            );
-
-            range.setEnd(
-                node,
-                index + term.length
-            );
-
-            const selection =
-                window.getSelection();
-
-            selection.removeAllRanges();
-
-            selection.addRange(
-                range
-            );
-
-            node.parentElement
-                .scrollIntoView({
-                    behavior:"smooth",
-                    block:"center"
-                });
-
-            return;
-
-        }
-
     }
 
-}
+    if(
+        $("gridSwitch").checked
+    ){
 
-
-function replaceCurrent(){
-
-    const find =
-        document.getElementById(
-            "findInput"
-        ).value;
-
-    const replace =
-        document.getElementById(
-            "replaceInput"
-        ).value;
-
-    if(!find)
-        return;
-
-    const walker =
-        document.createTreeWalker(
-            article,
-            NodeFilter.SHOW_TEXT
+        presentationPage.classList.add(
+            "math-grid"
         );
 
-    let node;
+    }
 
-    while(node=walker.nextNode()){
+    if(
+        $("newspaperSwitch").checked
+    ){
 
-        const index =
-            node.textContent
-                .toLowerCase()
-                .indexOf(
-                    find.toLowerCase()
-                );
-
-        if(index!==-1){
-
-            node.textContent =
-                node.textContent.substring(
-                    0,
-                    index
-                )
-                +
-                replace
-                +
-                node.textContent.substring(
-                    index + find.length
-                );
-
-            scheduleSave();
-
-            return;
-
-        }
+        presentationPage.classList.add(
+            "newspaper"
+        );
 
     }
 
+    if(
+        $("darkSwitch").checked
+    ){
+
+        presentationPage.classList.add(
+            "dark"
+        );
+
+    }
+
+    $("presentationTitle")
+        .textContent =
+        documentTitle.value ||
+        "Untitled document";
+
+    presentation.classList.add(
+        "show"
+    );
+
+    clearAnnotations();
+
+    resizeAnnotationCanvas();
+
+    showToast(
+        "Presentation mode"
+    );
+
 }
+
+
+function exitPresentation(){
+
+    presentation.classList.remove(
+        "show"
+    );
+
+    presentation.classList.remove(
+        "annotating"
+    );
+
+    annotationMode =
+        "pen";
+
+    updateAnnotationButtons();
+
+}
+
+
+$("presentBtn").onclick =
+    startPresentation;
+
+$("exitPresentation").onclick =
+    exitPresentation;
 
 
 /* =========================================================
-   STATS
+   PRESENTATION FULLSCREEN
    ========================================================= */
 
-function updateStats(){
+$("presentationFullscreen").onclick =
+    async ()=>{
+
+        try{
+
+            if(!document.fullscreenElement){
+
+                await presentation
+                    .requestFullscreen();
+
+            }else{
+
+                await document.exitFullscreen();
+
+            }
+
+        }catch(error){
+
+            console.log(error);
+
+        }
+
+    };
+
+
+/* =========================================================
+   PRESENTATION NAVIGATION
+   ========================================================= */
+
+$("prevPresentation").onclick =
+    ()=>{
+        presentationPage.scrollBy({
+            top:-window.innerHeight * .75,
+            behavior:"smooth"
+        });
+    };
+
+
+$("nextPresentation").onclick =
+    ()=>{
+        presentationPage.scrollBy({
+            top:window.innerHeight * .75,
+            behavior:"smooth"
+        });
+    };
+
+
+/* =========================================================
+   ANNOTATION SYSTEM
+   ========================================================= */
+
+const annotationCanvas =
+    $("annotationCanvas");
+
+const annotationContext =
+    annotationCanvas.getContext(
+        "2d"
+    );
+
+let drawing = false;
+let annotationMode = "pen";
+
+let annotationColor =
+    "#ff3b30";
+
+let annotationSize = 5;
+
+
+function resizeAnnotationCanvas(){
+
+    const oldCanvas =
+        document.createElement("canvas");
+
+    oldCanvas.width =
+        annotationCanvas.width;
+
+    oldCanvas.height =
+        annotationCanvas.height;
+
+    if(
+        oldCanvas.width &&
+        oldCanvas.height
+    ){
+
+        oldCanvas
+            .getContext("2d")
+            .drawImage(
+                annotationCanvas,
+                0,
+                0
+            );
+
+    }
+
+    const rect =
+        presentation
+            .getBoundingClientRect();
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+    annotationCanvas.width =
+        rect.width * dpr;
+
+    annotationCanvas.height =
+        rect.height * dpr;
+
+    annotationCanvas.style.width =
+        rect.width + "px";
+
+    annotationCanvas.style.height =
+        rect.height + "px";
+
+    annotationContext.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+}
+
+
+window.addEventListener(
+    "resize",
+    ()=>{
+        if(presentation.classList.contains("show")){
+            resizeAnnotationCanvas();
+        }
+    }
+);
+
+
+function getPointerPosition(e){
+
+    const rect =
+        annotationCanvas
+            .getBoundingClientRect();
+
+    return {
+
+        x:
+            e.clientX -
+            rect.left,
+
+        y:
+            e.clientY -
+            rect.top
+
+    };
+
+}
+
+
+annotationCanvas.addEventListener(
+    "pointerdown",
+    e=>{
+
+        if(
+            !presentation.classList.contains(
+                "annotating"
+            )
+        )
+            return;
+
+        drawing = true;
+
+        annotationCanvas.setPointerCapture(
+            e.pointerId
+        );
+
+        const pos =
+            getPointerPosition(e);
+
+        annotationContext.beginPath();
+
+        annotationContext.moveTo(
+            pos.x,
+            pos.y
+        );
+
+    }
+);
+
+
+annotationCanvas.addEventListener(
+    "pointermove",
+    e=>{
+
+        if(!drawing)
+            return;
+
+        const pos =
+            getPointerPosition(e);
+
+        annotationContext.lineTo(
+            pos.x,
+            pos.y
+        );
+
+        annotationContext.lineWidth =
+            annotationSize;
+
+        annotationContext.lineCap =
+            "round";
+
+        annotationContext.lineJoin =
+            "round";
+
+        if(
+            annotationMode ===
+            "highlighter"
+        ){
+
+            annotationContext.globalAlpha =
+                .25;
+
+            annotationContext.globalCompositeOperation =
+                "multiply";
+
+            annotationContext.strokeStyle =
+                annotationColor;
+
+        }else if(
+            annotationMode ===
+            "eraser"
+        ){
+
+            annotationContext.globalAlpha =
+                1;
+
+            annotationContext.globalCompositeOperation =
+                "destination-out";
+
+            annotationContext.strokeStyle =
+                "rgba(0,0,0,1)";
+
+        }else{
+
+            annotationContext.globalAlpha =
+                1;
+
+            annotationContext.globalCompositeOperation =
+                "source-over";
+
+            annotationContext.strokeStyle =
+                annotationColor;
+
+        }
+
+        annotationContext.stroke();
+
+    }
+);
+
+
+annotationCanvas.addEventListener(
+    "pointerup",
+    ()=>{
+        drawing = false;
+        annotationContext.closePath();
+    }
+);
+
+
+annotationCanvas.addEventListener(
+    "pointercancel",
+    ()=>{
+        drawing = false;
+    }
+);
+
+
+/* =========================================================
+   ANNOTATION BUTTONS
+   ========================================================= */
+
+function setAnnotationMode(mode){
+
+    annotationMode = mode;
+
+    presentation.classList.add(
+        "annotating"
+    );
+
+    updateAnnotationButtons();
+
+}
+
+
+function updateAnnotationButtons(){
+
+    $("penTool")
+        .classList.toggle(
+            "active",
+            annotationMode === "pen"
+        );
+
+    $("highlighterTool")
+        .classList.toggle(
+            "active",
+            annotationMode === "highlighter"
+        );
+
+    $("eraserTool")
+        .classList.toggle(
+            "active",
+            annotationMode === "eraser"
+        );
+
+}
+
+
+$("penTool").onclick =
+    ()=>{
+        setAnnotationMode("pen");
+    };
+
+
+$("highlighterTool").onclick =
+    ()=>{
+        setAnnotationMode("highlighter");
+    };
+
+
+$("eraserTool").onclick =
+    ()=>{
+        setAnnotationMode("eraser");
+    };
+
+
+$("annotationColor").addEventListener(
+    "input",
+    function(){
+
+        annotationColor =
+            this.value;
+
+        setAnnotationMode(
+            annotationMode === "eraser"
+                ? "pen"
+                : annotationMode
+        );
+
+    }
+);
+
+
+$("annotationSize").addEventListener(
+    "input",
+    function(){
+
+        annotationSize =
+            Number(this.value);
+
+    }
+);
+
+
+/* =========================================================
+   CLEAR ANNOTATIONS
+   ========================================================= */
+
+function clearAnnotations(){
+
+    annotationContext.clearRect(
+        0,
+        0,
+        annotationCanvas.width,
+        annotationCanvas.height
+    );
+
+}
+
+
+$("clearAnnotations").onclick =
+    ()=>{
+
+        if(
+            confirm(
+                "Clear all presentation annotations?"
+            )
+        ){
+
+            clearAnnotations();
+
+        }
+
+    };
+
+
+/* =========================================================
+   PRESENTATION KEYBOARD CONTROLS
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            presentation.classList.contains(
+                "show"
+            )
+        ){
+
+            if(e.key === "Escape"){
+
+                exitPresentation();
+
+                return;
+
+            }
+
+            if(e.key === "ArrowRight"){
+
+                presentationPage.scrollBy({
+                    top:window.innerHeight * .75,
+                    behavior:"smooth"
+                });
+
+            }
+
+            if(e.key === "ArrowLeft"){
+
+                presentationPage.scrollBy({
+                    top:-window.innerHeight * .75,
+                    behavior:"smooth"
+                });
+
+            }
+
+            return;
+
+        }
+
+
+        if(
+            (e.ctrlKey || e.metaKey) &&
+            e.key.toLowerCase() === "s"
+        ){
+
+            e.preventDefault();
+
+            saveDocument();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DOCUMENT TITLE
+   ========================================================= */
+
+documentTitle.addEventListener(
+    "input",
+    ()=>{
+
+        const heading =
+            editor.querySelector("h1");
+
+        if(
+            heading &&
+            heading.textContent ===
+            "Untitled document"
+        ){
+
+            heading.textContent =
+                documentTitle.value ||
+                "Untitled document";
+
+        }
+
+        $("presentationTitle")
+            .textContent =
+            documentTitle.value ||
+            "Untitled document";
+
+        autoSave();
+
+    }
+);
+
+
+/* =========================================================
+   EDITOR INPUT
+   ========================================================= */
+
+editor.addEventListener(
+    "input",
+    ()=>{
+
+        updateCounts();
+
+        autoSave();
+
+    }
+);
+
+
+/* =========================================================
+   COUNTS
+   ========================================================= */
+
+function updateCounts(){
 
     const text =
-        article.innerText
+        editor.innerText
             .replace(/\s+/g," ")
             .trim();
 
@@ -3538,142 +3984,98 @@ function updateStats(){
     const chars =
         text.length;
 
-    const minutes =
-        Math.max(
-            0,
-            Math.ceil(
-                words / 200
-            )
+    $("wordCount").textContent =
+        words +
+        (
+            words === 1
+                ? " word"
+                : " words"
         );
 
-    document.getElementById(
-        "wordCount"
-    ).textContent =
-        words +
-        (words===1?" word":" words");
-
-    document.getElementById(
-        "charCount"
-    ).textContent =
+    $("charCount").textContent =
         chars +
-        (chars===1
-            ?" character"
-            :" characters");
+        (
+            chars === 1
+                ? " character"
+                : " characters"
+        );
 
-    document.getElementById(
-        "readingTime"
-    ).textContent =
-        minutes +
-        " min read";
+    const reading =
+        Math.max(
+            0,
+            Math.ceil(words / 200)
+        );
+
+    $("readingTime").textContent =
+        reading +
+        (
+            reading === 1
+                ? " min read"
+                : " min read"
+        );
 
 }
 
 
 /* =========================================================
-   TOOLBAR ACTIVE STATES
+   ACTIVE TOOLBAR STATES
    ========================================================= */
 
-function updateToolbar(){
+function updateToolbarStates(){
 
     document
         .querySelectorAll(
-            ".command-button"
+            "[data-command]"
         )
         .forEach(button=>{
 
-            const command =
-                button.dataset.command;
-
-            let active=false;
-
             try{
 
-                active =
+                button.classList.toggle(
+                    "active",
                     document.queryCommandState(
-                        command
-                    );
+                        button.dataset.command
+                    )
+                );
 
             }catch{}
-
-            button.classList.toggle(
-                "active",
-                active
-            );
 
         });
 
 }
 
 
-/* =========================================================
-   SELECTION CHANGE
-   ========================================================= */
-
 document.addEventListener(
     "selectionchange",
     ()=>{
 
-        updateToolbar();
+        if(
+            document.activeElement ===
+            editor
+        ){
 
-    }
-);
+            updateToolbarStates();
 
+            const selection =
+                window.getSelection();
 
-/* =========================================================
-   KEYBOARD SHORTCUTS
-   ========================================================= */
+            if(
+                selection &&
+                selection.rangeCount
+            ){
 
-document.addEventListener(
-    "keydown",
-    event=>{
+                const text =
+                    selection
+                        .toString()
+                        .trim();
 
-        const ctrl =
-            event.ctrlKey ||
-            event.metaKey;
+                $("selectionInfo").textContent =
+                    text
+                        ? text.length +
+                          " selected"
+                        : "";
 
-        if(!ctrl)
-            return;
-
-        const key =
-            event.key.toLowerCase();
-
-        if(key==="s"){
-
-            event.preventDefault();
-
-            saveDocument();
-
-        }
-
-        if(key==="b"){
-
-            event.preventDefault();
-
-            runCommand("bold");
-
-        }
-
-        if(key==="i"){
-
-            event.preventDefault();
-
-            runCommand("italic");
-
-        }
-
-        if(key==="u"){
-
-            event.preventDefault();
-
-            runCommand("underline");
-
-        }
-
-        if(key==="f"){
-
-            event.preventDefault();
-
-            toggleFind();
+            }
 
         }
 
@@ -3682,184 +4084,38 @@ document.addEventListener(
 
 
 /* =========================================================
-   FULLSCREEN
+   SAVE BUTTON
    ========================================================= */
 
-async function toggleFullscreen(){
-
-    try{
-
-        if(!document.fullscreenElement){
-
-            await document.documentElement
-                .requestFullscreen();
-
-        }else{
-
-            await document.exitFullscreen();
-
-        }
-
-    }catch(e){
-
-        console.log(e);
-
-    }
-
-}
+$("saveBtn").onclick =
+    ()=>{
+        saveDocument();
+        showToast("Document saved");
+    };
 
 
 /* =========================================================
-   PRESENT
+   LOAD
    ========================================================= */
 
-function presentDocument(){
+loadDocument();
 
-    document.body.classList.toggle(
-        "present-mode"
-    );
+updateCounts();
 
-}
+updateZoom();
+
+updateToolbarStates();
 
 
 /* =========================================================
-   DASHBOARD
-   ========================================================= */
-
-function goDashboard(){
-
-    saveDocument();
-
-    window.location.href =
-        "dashboard.html";
-
-}
-
-
-/* =========================================================
-   EXPORT HTML
-   ========================================================= */
-
-function exportHTML(){
-
-    const title =
-        titleInput.value
-        || "DocBird Document";
-
-    const html = `<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>${escapeHTML(title)}</title>
-
-<style>
-
-body{
-font-family:Arial,sans-serif;
-max-width:850px;
-margin:60px auto;
-padding:30px;
-line-height:1.7;
-}
-
-table{
-border-collapse:collapse;
-width:100%;
-}
-
-td,th{
-border:1px solid #ccc;
-padding:8px;
-}
-
-</style>
-
-</head>
-
-<body>
-
-${article.innerHTML}
-
-</body>
-
-</html>`;
-
-    downloadFile(
-        title + ".html",
-        html,
-        "text/html"
-    );
-
-}
-
-
-/* =========================================================
-   EXPORT TXT
-   ========================================================= */
-
-function exportTXT(){
-
-    const title =
-        titleInput.value
-        || "DocBird Document";
-
-    downloadFile(
-        title + ".txt",
-        article.innerText,
-        "text/plain"
-    );
-
-}
-
-
-/* =========================================================
-   DOWNLOAD
-   ========================================================= */
-
-function downloadFile(
-    filename,
-    content,
-    type
-){
-
-    const blob =
-        new Blob(
-            [content],
-            {type:type}
-        );
-
-    const url =
-        URL.createObjectURL(blob);
-
-    const link =
-        document.createElement("a");
-
-    link.href=url;
-
-    link.download=filename;
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    link.remove();
-
-    URL.revokeObjectURL(url);
-
-}
-
-
-/* =========================================================
-   CLEANUP / INITIALISATION
+   STARTUP
    ========================================================= */
 
 window.addEventListener(
     "beforeunload",
-    saveDocument
+    ()=>{
+        saveDocument();
+    }
 );
 
 </script>
